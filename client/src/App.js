@@ -1,0 +1,32 @@
+import './App.css';
+import { React } from 'react'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { AuthContextProvider } from './auth';
+import { GlobalStoreContextProvider } from './store'
+import {
+    AppBanner,
+    HomeWrapper,
+    PlaylistsScreen
+} from './components'
+/*
+  This is the entry-point for our application. Notice that we
+  inject our store into all the components in our application.
+  
+  @author Karen Elshemy
+*/
+const App = () => {   
+    return (
+        <BrowserRouter>
+            <AuthContextProvider>
+                <GlobalStoreContextProvider>              
+                    <AppBanner />
+                    <Switch>
+                        <Route path="/" exact component={HomeWrapper} />
+                    </Switch>
+                </GlobalStoreContextProvider>
+            </AuthContextProvider>
+        </BrowserRouter>
+    )
+}
+
+export default App

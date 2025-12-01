@@ -1,4 +1,6 @@
+import AppBanner from './AppBanner'
 import HomeWrapper from './HomeWrapper'
+import PlaylistsScreen from './PlaylistsScreen'
 import WelcomeScreen from './WelcomeScreen'
 
 /*
@@ -8,6 +10,8 @@ import WelcomeScreen from './WelcomeScreen'
     @author Karen Elshemy
 */
 export {
-    HomeWrapper,
+    AppBanner,
+    HomeWrapper, 
+    PlaylistsScreen,
     WelcomeScreen
 }

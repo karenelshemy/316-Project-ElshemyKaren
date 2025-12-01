@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import PlaylistsScreen from './PlaylistScreen'
+import PlaylistsScreen from './PlaylistsScreen'
 import WelcomeScreen from './WelcomeScreen'
 import AuthContext from '../auth'
 
