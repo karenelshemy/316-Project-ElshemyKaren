@@ -75,10 +75,10 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.registerUser = async function(firstName, lastName, email, password, passwordVerify) {
+    auth.registerUser = async function(userName, email, password, passwordConfirm) {
         console.log("REGISTERING USER");
         try{   
-            const response = await authRequestSender.registerUser(firstName, lastName, email, password, passwordVerify);   
+            const response = await authRequestSender.registerUser(userName, email, password, passwordConfirm);   
             if (response.ok) {
                 const data = await response.json();
                 console.log("Registered Sucessfully");
@@ -143,16 +143,6 @@ function AuthContextProvider(props) {
             })
             history.push("/");
         }
-    }
-
-    auth.getUserInitials = function() {
-        let initials = "";
-        if (auth.user) {
-            initials += auth.user.firstName.charAt(0);
-            initials += auth.user.lastName.charAt(0);
-        }
-        console.log("user initials: " + initials);
-        return initials;
     }
 
     return (

@@ -40,14 +40,14 @@ export const logoutUser = async () => {
     });
     return response;
 }
-export const registerUser = async (firstName, lastName, email, password, passwordVerify) => {
+export const registerUser = async (userName, email, password, passwordConfirm) => {
     const response = await fetch(`${baseURL}/register/`, {
         method: "POST",
         credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ firstName: firstName, lastName: lastName, email: email, password: password, passwordVerify: passwordVerify })
+        body: JSON.stringify({ userName: userName, email: email, password: password, passwordConfirm: passwordConfirm })
     });
     return response;
 }

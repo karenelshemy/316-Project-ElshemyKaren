@@ -1,0 +1,149 @@
+import { useContext } from 'react';
+import AuthContext from '../auth'
+import Copyright from './Copyright'
+
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+
+export default function RegisterScreen() {
+    const { auth } = useContext(AuthContext);
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        auth.registerUser(
+            formData.get('userName'),
+            formData.get('email'),
+            formData.get('password'),
+            formData.get('passwordConfirm'),
+            formData.get('avatar')
+        );
+    };
+
+    return (
+            <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <LockOutlinedIcon fontSize="large"/>
+                    <Typography component="h1" variant="h5" sx={{ color: "#616161" }}>
+                        Create Account
+                    </Typography>
+                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} >
+                                <TextField
+                                    autoComplete="uname"
+                                    name="userName"
+                                    required
+                                    fullWidth
+                                    id="userName"
+                                    label="User Name"
+                                    autoFocus
+                                    variant="standard"
+                                    InputLabelProps={{
+                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                    }}
+                                    sx= {{
+                                        backgroundColor: "#EAD9FA"
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="Email"
+                                    name="email"
+                                    autoComplete="email"
+                                    variant="standard"
+                                    InputLabelProps={{
+                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                    }}
+                                    sx= {{
+                                        color: "black",
+                                        backgroundColor: "#EAD9FA"
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="new-password"
+                                    variant="standard"
+                                    InputLabelProps={{
+                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                    }}
+                                    sx= {{
+                                        color: "black",
+                                        backgroundColor: "#EAD9FA"
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="passwordConfirm"
+                                    label="Password Confirm"
+                                    type="password"
+                                    id="passwordConfirm"
+                                    autoComplete="new-password"
+                                    variant="standard"
+                                    InputLabelProps={{
+                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                    }}
+                                    sx= {{
+                                        color: "black",
+                                        backgroundColor: "#EAD9FA"
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{
+                            mt: 3, 
+                            mb: 2,
+                            backgroundColor: 'black',
+                            textTransform: 'none',
+                            '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                        }}
+                        >
+                            Create Account
+                        </Button>
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Link href="/login/" variant="body2" sx={{ color: "#C70202", fontWeight: "bold", textDecoration: 'none' }}>
+                                    Already have an account? Sign in
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Box>
+                <Copyright sx={{ mt: 15 }} />
+            </Container>
+    );
+}

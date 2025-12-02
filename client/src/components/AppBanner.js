@@ -43,7 +43,7 @@ export default function AppBanner() {
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
-                vertical: 'top',
+                vertical: 'bottom',
                 horizontal: 'right',
             }}
             id={menuId}
@@ -54,16 +54,21 @@ export default function AppBanner() {
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
+            MenuListProps={{
+                sx: {
+                    backgroundColor: '#EAD9FA'
+                }
+            }}
         >
-            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create Account</Link></MenuItem>
+            <MenuItem onClick={handleMenuClose}><Link style={{ textDecoration: 'none', color: 'black' }} to='/login/'>Login</Link></MenuItem>
+            <MenuItem onClick={handleMenuClose}><Link style={{ textDecoration: 'none', color: 'black' }} to='/register/'>Create Account</Link></MenuItem>
         </Menu>
     );
     const loggedInMenu = 
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
-                vertical: 'top',
+                vertical: 'bottom',
                 horizontal: 'right',
             }}
             id={menuId}
@@ -88,10 +93,8 @@ export default function AppBanner() {
     }
     
     function getAccountMenu(loggedIn) {
-        let userInitials = auth.getUserInitials();
-        console.log("userInitials: " + userInitials);
         if (loggedIn) 
-            return <div>{userInitials}</div>;
+            return <div>{}</div>;
         else
             return <AccountCircle />;
     }
@@ -100,12 +103,12 @@ export default function AppBanner() {
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" sx={{ height: '60px', backgroundColor: 'rgb(204, 0, 204)' }}>
                 <Toolbar >
-                    <IconButton onClick={handleHouseClick} sx={{ backgroundColor: '#E3E0DE', color: 'black' }} >
+                    <IconButton onClick={handleHouseClick} sx={{ backgroundColor: '#EAD9FA', color: 'black' }} >
                         <Home />
                     </IconButton>
                     <Box sx={{ flexGrow: 1 }}>{navigationBar}</Box>
                     <Box sx={{ height: "45px", display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton sx={{ backgroundColor: "#E3E0DE", color: "black", width: 40, height: 40, mt: "3px" }}
+                        <IconButton sx={{ backgroundColor: "#EAD9FA", color: "black", width: 40, height: 40, mt: "3px" }}
                             size="large"
                             edge="end"
                             aria-label="account of current user"
