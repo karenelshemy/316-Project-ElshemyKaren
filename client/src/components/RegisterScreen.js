@@ -1,13 +1,15 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
@@ -15,6 +17,10 @@ import Typography from '@mui/material/Typography';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -28,9 +34,40 @@ export default function RegisterScreen() {
         );
     };
 
+    function handleUpdateUsername(event) {
+        setUserName(event.target.value);
+    }
+
+    const handleClearUsername = () => {
+        setUserName("");
+    }
+    
+    function handleUpdateEmail(event) {
+        setEmail(event.target.value);
+    }
+
+    const handleClearEmail = () => {
+        setEmail("");
+    }
+    
+    function handleUpdatePassword(event) {
+        setPassword(event.target.value);
+    }
+
+    const handleClearPassword = () => {
+        setPassword("");
+    }
+
+    function handleUpdatePasswordConfirm(event) {
+        setPasswordConfirm(event.target.value);
+    }
+
+    const handleClearPasswordConfirm = () => {
+        setPasswordConfirm("");
+    }
+
     return (
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
                 <Box
                     sx={{
                         marginTop: 8,
@@ -49,14 +86,26 @@ export default function RegisterScreen() {
                                 <TextField
                                     autoComplete="uname"
                                     name="userName"
-                                    required
                                     fullWidth
                                     id="userName"
                                     label="User Name"
                                     autoFocus
                                     variant="standard"
+                                    value={userName}
+                                    onChange={handleUpdateUsername}
                                     InputLabelProps={{
-                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                        style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
+                                    }}
+                                    InputProps={{
+                                        endAdornment:
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={handleClearUsername} sx={{ top: "-5px" }} >
+                                                    <CancelOutlinedIcon sx={{ color: "black", fontSize: 20 }} />
+                                                </IconButton>
+                                            </InputAdornment>
+                                    }}
+                                    inputProps={{
+                                        style: { paddingLeft: "10px" }
                                     }}
                                     sx= {{
                                         backgroundColor: "#EAD9FA"
@@ -65,15 +114,27 @@ export default function RegisterScreen() {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
                                     fullWidth
                                     id="email"
                                     label="Email"
                                     name="email"
                                     autoComplete="email"
                                     variant="standard"
+                                    value={email}
+                                    onChange={handleUpdateEmail}
                                     InputLabelProps={{
-                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                        style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
+                                    }}
+                                    InputProps={{
+                                        endAdornment:
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={handleClearEmail} sx={{ top: "-5px" }} >
+                                                    <CancelOutlinedIcon sx={{ color: "black", fontSize: 20 }} />
+                                                </IconButton>
+                                            </InputAdornment>
+                                    }}
+                                    inputProps={{
+                                        style: { paddingLeft: "10px" }
                                     }}
                                     sx= {{
                                         color: "black",
@@ -83,7 +144,6 @@ export default function RegisterScreen() {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
                                     fullWidth
                                     name="password"
                                     label="Password"
@@ -91,8 +151,21 @@ export default function RegisterScreen() {
                                     id="password"
                                     autoComplete="new-password"
                                     variant="standard"
+                                    value={password}
+                                    onChange={handleUpdatePassword}
                                     InputLabelProps={{
-                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                        style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
+                                    }}
+                                    InputProps={{
+                                        endAdornment:
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={handleClearPassword} sx={{ top: "-5px" }} >
+                                                    <CancelOutlinedIcon sx={{ color: "black", fontSize: 20 }} />
+                                                </IconButton>
+                                            </InputAdornment>
+                                    }}
+                                    inputProps={{
+                                        style: { paddingLeft: "10px" }
                                     }}
                                     sx= {{
                                         color: "black",
@@ -102,7 +175,6 @@ export default function RegisterScreen() {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
                                     fullWidth
                                     name="passwordConfirm"
                                     label="Password Confirm"
@@ -110,8 +182,21 @@ export default function RegisterScreen() {
                                     id="passwordConfirm"
                                     autoComplete="new-password"
                                     variant="standard"
+                                    value={passwordConfirm}
+                                    onChange={handleUpdatePasswordConfirm}
                                     InputLabelProps={{
-                                        style: { color: "black", left: "10px", fontSize: 15 }
+                                        style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
+                                    }}
+                                    InputProps={{
+                                        endAdornment:
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={handleClearPasswordConfirm} sx={{ top: "-5px" }} >
+                                                    <CancelOutlinedIcon sx={{ color: "black", fontSize: 20 }} />
+                                                </IconButton>
+                                            </InputAdornment>
+                                    }}
+                                    inputProps={{
+                                        style: { paddingLeft: "10px" }
                                     }}
                                     sx= {{
                                         color: "black",
@@ -125,12 +210,12 @@ export default function RegisterScreen() {
                             fullWidth
                             variant="contained"
                             sx={{
-                            mt: 3, 
-                            mb: 2,
-                            backgroundColor: 'black',
-                            textTransform: 'none',
-                            '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
-                        }}
+                                mt: 3, 
+                                mb: 2,
+                                backgroundColor: 'black',
+                                textTransform: 'none',
+                                '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                            }}
                         >
                             Create Account
                         </Button>

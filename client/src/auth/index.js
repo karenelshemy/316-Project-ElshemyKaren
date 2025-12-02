@@ -75,10 +75,10 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.registerUser = async function(userName, email, password, passwordConfirm) {
+    auth.registerUser = async function(userName, email, password, passwordConfirm, avatar) {
         console.log("REGISTERING USER");
         try{   
-            const response = await authRequestSender.registerUser(userName, email, password, passwordConfirm);   
+            const response = await authRequestSender.registerUser(userName, email, password, passwordConfirm, avatar);   
             if (response.ok) {
                 const data = await response.json();
                 console.log("Registered Sucessfully");
