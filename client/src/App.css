@@ -7,13 +7,17 @@
         @author Karen Elshemy
     */
   --swatch-foundation: #eeeedd;
-  --swatch-primary: #e6e6e6;
+  --swatch-primary: #f7f3d5;
   --swatch-complement: #e1e4cb;
   --swatch-contrast: #999999;
   --swatch-accent: #669966;
   --swatch-status: #123456;
   --my-font-family: "Robaaaoto";
   --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
+}
+
+body {
+    background-color: #ffd9ff
 }
 
 #root {
@@ -24,6 +28,9 @@
   left: 10%;
   height: 90%;
   top: 5%;
+  border-color: black;
+  border-width: 2px;
+  border-style: solid;
 }
 
 #app-root {
