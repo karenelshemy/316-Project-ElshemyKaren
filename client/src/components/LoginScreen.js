@@ -33,7 +33,7 @@ export default function LoginScreen() {
         setEmail(event.target.value);
     }
 
-    const handleClearEmail= () => {
+    const handleClearEmail = () => {
         setEmail("");
     }
 
@@ -42,7 +42,7 @@ export default function LoginScreen() {
         setPassword(event.target.value);
     }
 
-    const handleClearPassword= () => {
+    const handleClearPassword = () => {
         setPassword("");
     }
 

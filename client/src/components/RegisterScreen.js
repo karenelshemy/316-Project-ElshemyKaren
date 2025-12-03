@@ -137,7 +137,6 @@ export default function RegisterScreen() {
                                         style: { paddingLeft: "10px" }
                                     }}
                                     sx= {{
-                                        color: "black",
                                         backgroundColor: "#EAD9FA"
                                     }}
                                 />
@@ -168,7 +167,6 @@ export default function RegisterScreen() {
                                         style: { paddingLeft: "10px" }
                                     }}
                                     sx= {{
-                                        color: "black",
                                         backgroundColor: "#EAD9FA"
                                     }}
                                 />
@@ -199,7 +197,6 @@ export default function RegisterScreen() {
                                         style: { paddingLeft: "10px" }
                                     }}
                                     sx= {{
-                                        color: "black",
                                         backgroundColor: "#EAD9FA"
                                     }}
                                 />
