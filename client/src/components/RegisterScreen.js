@@ -71,10 +71,7 @@ export default function RegisterScreen() {
     
     async function handleUpdateEmail(event) {
         setEmail(event.target.value);
-        if (event.target.value === "") {
-            setIsEmailIncorrect(false);
-            return;
-        }
+
         const response = await authRequestSender.existingUser(event.target.value);
         if (response.data.success === false) {
             setIsEmailIncorrect(true);

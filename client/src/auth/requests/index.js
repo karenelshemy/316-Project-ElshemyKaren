@@ -41,7 +41,7 @@ export const registerUser = (userName, email, password, passwordConfirm, avatar)
     })
 }
 export const existingUser = (email) => {
-    return api.get('/emailExists', { params: { email } });
+    return api.get('/email', { params: { email } });
 }
 
 const apis = {

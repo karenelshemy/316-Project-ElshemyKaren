@@ -19,14 +19,21 @@ export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [doesNotMatch, setDoesNotMatch] = useState(false);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        auth.loginUser(
+        const response = await auth.loginUser(
             formData.get('email'),
             formData.get('password')
         );
+        if (response.success === false) {
+            setDoesNotMatch(true);
+        } else {
+            setDoesNotMatch(false);
+        }
+
     };
 
     function handleUpdateEmail(event) {
@@ -35,6 +42,7 @@ export default function LoginScreen() {
 
     const handleClearEmail = () => {
         setEmail("");
+        setDoesNotMatch(false);
     }
 
     
@@ -44,6 +52,7 @@ export default function LoginScreen() {
 
     const handleClearPassword = () => {
         setPassword("");
+        setDoesNotMatch(false);
     }
 
 
@@ -73,6 +82,8 @@ export default function LoginScreen() {
                         variant="standard"
                         value={email}
                         onChange={handleUpdateEmail}
+                        error={doesNotMatch}
+                        helperText={doesNotMatch && "Incorrect email or password."}
                         InputLabelProps={{
                             style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                         }}
@@ -102,6 +113,8 @@ export default function LoginScreen() {
                         variant="standard"
                         value={password}
                         onChange={handleUpdatePassword}
+                        error={doesNotMatch}
+                        helperText={doesNotMatch && "Incorrect email or password."}
                         InputLabelProps={{
                             style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                         }}

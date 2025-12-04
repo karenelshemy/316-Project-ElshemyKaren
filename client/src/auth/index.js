@@ -84,14 +84,11 @@ function AuthContextProvider(props) {
                     type: AuthActionType.REGISTER_USER,
                     payload: {
                         user: response.data.user,
-                        loggedIn: true,
+                        loggedIn: false,
                         errorMessage: null
                     }
                 })
                 history.push("/login");
-                console.log("NOW WE LOGIN");
-                auth.loginUser(email, password);
-                console.log("LOGGED IN");
             }
         } catch(error){
             authReducer({
@@ -128,6 +125,7 @@ function AuthContextProvider(props) {
                     errorMessage: error.response.data.errorMessage
                 }
             })
+            return { success: false}
         }
     }
 
