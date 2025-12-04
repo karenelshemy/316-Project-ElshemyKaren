@@ -5,10 +5,12 @@ import { AuthContextProvider } from './auth';
 import { GlobalStoreContextProvider } from './store'
 import {
     AppBanner,
+    EditAccountScreen,
     HomeWrapper,
     LoginScreen,
     PlaylistsScreen,
-    RegisterScreen
+    RegisterScreen,
+    WelcomeScreen
 } from './components'
 /*
   This is the entry-point for our application. Notice that we
@@ -24,8 +26,10 @@ const App = () => {
                     <AppBanner />
                     <Switch>
                         <Route path="/" exact component={HomeWrapper} />
+                        <Route path = "/home/" exact component={WelcomeScreen} />
                         <Route path="/register/" exact component={RegisterScreen} />
                         <Route path="/login/" exact component={LoginScreen} />
+                        <Route path="/edit/" exact component={EditAccountScreen} />
                         <Route path="/playlist/" exact component={PlaylistsScreen} />
                     </Switch>
                 </GlobalStoreContextProvider>

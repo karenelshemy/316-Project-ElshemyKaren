@@ -1,5 +1,6 @@
 import AppBanner from './AppBanner'
 import Copyright from './Copyright'
+import EditAccountScreen from './EditAccountScreen'
 import HomeWrapper from './HomeWrapper'
 import LoginScreen from './LoginScreen'
 import PlaylistsScreen from './PlaylistsScreen'
@@ -15,6 +16,7 @@ import WelcomeScreen from './WelcomeScreen'
 export {
     AppBanner,
     Copyright,
+    EditAccountScreen,
     HomeWrapper, 
     LoginScreen,
     PlaylistsScreen,

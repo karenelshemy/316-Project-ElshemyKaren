@@ -67,7 +67,7 @@ export default function LoginScreen() {
                 }}
             >
                 <LockOutlinedIcon fontSize="large"/>
-                <Typography component="h1" variant="h5" sx={{ color: "#616161", fontSize: 30 }}>
+                <Typography component="h1" variant="h5" sx={{ color: "#616161", fontSize: 30, mt: 1 }}>
                     Sign In
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>

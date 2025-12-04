@@ -24,7 +24,7 @@ function AuthContextProvider(props) {
     useEffect(() => {
         auth.getLoggedIn();
     }, []);
-
+    
     const authReducer = (action) => {
         const { type, payload } = action;
         switch (type) {
@@ -114,8 +114,9 @@ function AuthContextProvider(props) {
                         errorMessage: null
                     }
                 })
-                history.push("/");
             }
+            history.push("/playlist/")
+            return response.data;
         } catch(error){
             authReducer({
                 type: AuthActionType.LOGIN_USER,

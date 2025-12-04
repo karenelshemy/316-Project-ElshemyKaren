@@ -134,12 +134,12 @@ export default function RegisterScreen() {
                     }}
                 >
                     <LockOutlinedIcon fontSize="large"/>
-                    <Typography component="h1" variant="h5" sx={{ color: "#616161" }}>
+                    <Typography component="h1" variant="h5" sx={{ color: "#616161", mt:1 }}>
                         Create Account
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} >
+                            <Grid item xs={12} sx={{ mt: 2 }}>
                                 <TextField
                                     autoComplete="uname"
                                     name="userName"
