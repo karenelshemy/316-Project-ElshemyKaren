@@ -163,9 +163,35 @@ registerUser = async (req, res) => {
     }
 }
 
+existingUser = async (req, res) => {
+    try {
+        const { email } = req.query;
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
+            console.log("existingUser: " + existingUser);
+        }
+        if (!existingUser) {
+            return res
+                .status(200).json({
+                    success: true
+                })
+        } else {
+            return res
+                .status(200).json({
+                    success: false,
+                    errorMessage: "An account with this email address already exists."
+                })
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    existingUser
 }

@@ -1,5 +1,6 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import AuthContext from '../auth'
+import authRequestSender from '../auth/requests'
 import Copyright from './Copyright'
 
 import Avatar from '@mui/material/Avatar';
@@ -22,6 +23,32 @@ export default function RegisterScreen() {
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
 
+    const [isEmailIncorrect, setIsEmailIncorrect] = useState(false);
+    const [isPasswordFieldClicked, setIsPasswordFieldClicked] = useState(false);
+    const [isPasswordIncorrect, setIsPasswordIncorrect] = useState(false);
+    const [isPasswordConfirmFieldClicked, setIsPasswordConfirmFieldClicked] = useState(false);
+    const [isPasswordConfirmIncorrect, setIsPasswordConfirmIncorrect] = useState(false);
+
+    useEffect(() => {
+        if (password !== passwordConfirm) {
+            setIsPasswordConfirmIncorrect(true);
+        } else {
+            setIsPasswordConfirmIncorrect(false);
+        }
+    }, [password, passwordConfirm]);
+
+    useEffect(() => {
+        if (password === "") {
+            setIsPasswordIncorrect(false);
+        } else if (password.length < 8) {
+            setIsPasswordIncorrect(true);
+        }
+    }, [password]);
+
+    const canSubmit = () => {
+        return (userName.trim() !== "" && email.trim() !== "" && password.trim() !== "" && passwordConfirm.trim !== ""
+            && isEmailIncorrect === false && isPasswordIncorrect === false && isPasswordConfirmIncorrect === false)
+    }
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -42,28 +69,61 @@ export default function RegisterScreen() {
         setUserName("");
     }
     
-    function handleUpdateEmail(event) {
+    async function handleUpdateEmail(event) {
         setEmail(event.target.value);
+        if (event.target.value === "") {
+            setIsEmailIncorrect(false);
+            return;
+        }
+        const response = await authRequestSender.existingUser(event.target.value);
+        if (response.data.success === false) {
+            setIsEmailIncorrect(true);
+        } else {
+            setIsEmailIncorrect(false);
+        }
     }
 
     const handleClearEmail = () => {
         setEmail("");
+        setIsEmailIncorrect(false);
+    }
+
+    const handlePasswordFieldClicked = () => {
+        setIsPasswordFieldClicked(true);
     }
     
     function handleUpdatePassword(event) {
         setPassword(event.target.value);
+        if (isPasswordFieldClicked && event.target.value.length < 8) {
+            setIsPasswordIncorrect(true);
+        } else {
+            setIsPasswordIncorrect(false);
+        }
     }
 
     const handleClearPassword = () => {
         setPassword("");
+        setIsPasswordFieldClicked(false);
+        setIsPasswordIncorrect(false);
     }
 
+    const handlePasswordConfirmFieldClicked = () => {
+        setIsPasswordConfirmFieldClicked(true);
+    }
+    
     function handleUpdatePasswordConfirm(event) {
         setPasswordConfirm(event.target.value);
+        if (event.target.value !== password) {
+            setIsPasswordConfirmIncorrect(true);
+        } else {
+            setIsPasswordConfirmIncorrect(false);
+        }
     }
 
     const handleClearPasswordConfirm = () => {
         setPasswordConfirm("");
+        setIsPasswordConfirmFieldClicked(false);
+        setIsPasswordConfirmIncorrect(false);
     }
 
     return (
@@ -122,6 +182,8 @@ export default function RegisterScreen() {
                                     variant="standard"
                                     value={email}
                                     onChange={handleUpdateEmail}
+                                    error={isEmailIncorrect}
+                                    helperText={isEmailIncorrect && "An account with this email address already exists." }
                                     InputLabelProps={{
                                         style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                     }}
@@ -152,6 +214,9 @@ export default function RegisterScreen() {
                                     variant="standard"
                                     value={password}
                                     onChange={handleUpdatePassword}
+                                    onFocus={handlePasswordFieldClicked}
+                                    error={isPasswordIncorrect && isPasswordFieldClicked}
+                                    helperText={isPasswordIncorrect && isPasswordFieldClicked && "Password must be at least 8 characters." }
                                     InputLabelProps={{
                                         style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                     }}
@@ -182,6 +247,9 @@ export default function RegisterScreen() {
                                     variant="standard"
                                     value={passwordConfirm}
                                     onChange={handleUpdatePasswordConfirm}
+                                    onFocus={handlePasswordConfirmFieldClicked}
+                                    error={isPasswordConfirmIncorrect && isPasswordConfirmFieldClicked}
+                                    helperText={isPasswordConfirmIncorrect && isPasswordConfirmFieldClicked && "Passwords do not match." }
                                     InputLabelProps={{
                                         style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                     }}
@@ -206,6 +274,7 @@ export default function RegisterScreen() {
                             type="submit"
                             fullWidth
                             variant="contained"
+                            disabled={!canSubmit()}
                             sx={{
                                 mt: 3, 
                                 mb: 2,

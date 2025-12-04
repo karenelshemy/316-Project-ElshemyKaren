@@ -63,13 +63,12 @@ function AuthContextProvider(props) {
 
     auth.getLoggedIn = async function () {
         const response = await authRequestSender.getLoggedIn();
-        if (response.ok) {
-            const data = await response.json();
+        if (response.status === 200) {
             authReducer({
                 type: AuthActionType.GET_LOGGED_IN,
                 payload: {
-                    loggedIn: data.loggedIn,
-                    user: data.user
+                    loggedIn: response.data.loggedIn,
+                    user: response.data.user
                 }
             });
         }
@@ -79,13 +78,12 @@ function AuthContextProvider(props) {
         console.log("REGISTERING USER");
         try{   
             const response = await authRequestSender.registerUser(userName, email, password, passwordConfirm, avatar);   
-            if (response.ok) {
-                const data = await response.json();
+            if (response.status === 200) {
                 console.log("Registered Sucessfully");
                 authReducer({
                     type: AuthActionType.REGISTER_USER,
                     payload: {
-                        user: data.user,
+                        user: response.data.user,
                         loggedIn: true,
                         errorMessage: null
                     }
@@ -110,12 +108,11 @@ function AuthContextProvider(props) {
     auth.loginUser = async function(email, password) {
         try{
             const response = await authRequestSender.loginUser(email, password);
-            if (response.ok) {
-                const data = await response.json();
+            if (response.status === 200) {
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
-                        user: data.user,
+                        user: response.data.user,
                         loggedIn: true,
                         errorMessage: null
                     }
@@ -136,7 +133,7 @@ function AuthContextProvider(props) {
 
     auth.logoutUser = async function() {
         const response = await authRequestSender.logoutUser();
-        if (response.ok) {
+        if (response.status === 200) {
             authReducer( {
                 type: AuthActionType.LOGOUT_USER,
                 payload: null

@@ -1,12 +1,20 @@
 /*
     This is our http api for all things auth, which we use to 
-    send authorization requests to our back-end API. It has been 
-    rewritten to use Fetch, which is a native (to browsers) standard.
+    send authorization requests to our back-end API. Note we`re 
+    using the Axios library for doing this, which is an easy to 
+    use AJAX-based library. We could (and maybe should) use Fetch, 
+    which is a native (to browsers) standard, but Axios is easier
+    to use when sending JSON back and forth and it`s a Promise-
+    based API which helps a lot with asynchronous communication.
     
     @author Karen Elshemy
 */
 
-const baseURL = 'http://localhost:4000/auth';
+import axios from 'axios'
+axios.defaults.withCredentials = true;
+const api = axios.create({
+    baseURL: 'http://localhost:4000/auth',
+})
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /register). SOME ALSO
@@ -15,48 +23,33 @@ const baseURL = 'http://localhost:4000/auth';
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 
-export const getLoggedIn = async () => {
-    const response = await fetch(`${baseURL}/loggedIn/`, {
-      method: "GET",
-      credentials: "include"
-    });
-    return response;
+export const getLoggedIn = () => api.get(`/loggedIn/`);
+export const loginUser = (email, password) => {
+    return api.post(`/login/`, {
+        email : email,
+        password : password
+    })
 }
-export const loginUser = async (email, password) => {
-    const response = await fetch(`${baseURL}/login/`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email: email, password: password })
-    });
-    return response;
+export const logoutUser = () => api.get(`/logout/`)
+export const registerUser = (userName, email, password, passwordConfirm, avatar) => {
+    return api.post(`/register/`, {
+        userName: userName,
+        email : email,
+        password : password,
+        passwordConfirm : passwordConfirm, 
+        avatar: avatar
+    })
 }
-export const logoutUser = async () => {
-    const response = await fetch(`${baseURL}/logout/`, {
-        method: "GET",
-        credentials: "include"
-    });
-    return response;
-}
-export const registerUser = async (userName, email, password, passwordConfirm, avatar) => {
-    const response = await fetch(`${baseURL}/register/`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ userName: userName, email: email, password: password, passwordConfirm: passwordConfirm, avatar: avatar })
-    });
-    return response;
+export const existingUser = (email) => {
+    return api.get('/emailExists', { params: { email } });
 }
 
 const apis = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    existingUser
 }
 
 export default apis
