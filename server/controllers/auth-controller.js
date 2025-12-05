@@ -177,10 +177,81 @@ existingUser = async (req, res) => {
     }
 }
 
+updateUser = async (req, res) => {
+    try {
+        console.log("UPDATING USER IN BACKEND");
+        let userId = auth.verifyUser(req);
+        if (!userId) {
+            return res.status(200).json({
+                loggedIn: false,
+                user: null,
+                errorMessage: "?"
+            })
+        }
+        const existingUser = await User.findOne({ _id: userId });
+        const { userName, password, passwordConfirm } = req.body;
+        console.log("update user: " + userName + " " + password + " " + passwordConfirm);
+        if (!userName || !password || !passwordConfirm) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        console.log("all fields provided");
+        if (userName.trim() === "") {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter a username that is not all whitespace."
+                });
+        }
+        if (password.length < 8) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter a password of at least 8 characters."
+                });
+        }
+        console.log("password long enough");
+        if (password !== passwordConfirm) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter the same password twice."
+                })
+        }
+        console.log("password and password confirm match");
+        console.log("existingUser: " + existingUser);
+
+        existingUser.userName = userName;
+
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const passwordHash = await bcrypt.hash(password, salt);
+        console.log("passwordHash: " + passwordHash);
+        existingUser.passwordHash = passwordHash;
+
+        const updatedUser = await existingUser.save();
+        console.log("user updated: " + existingUser._id);
+
+        return res.status(200).json({
+            success: true,
+            user: {
+                userName: existingUser.userName,
+                email: existingUser.email,
+
+            }
+        })
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();  
+    }
+}
+
 module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
     logoutUser,
-    existingUser
+    existingUser,
+    updateUser
 }

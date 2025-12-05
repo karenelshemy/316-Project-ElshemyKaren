@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react';
 import AuthContext from '../auth'
 import authRequestSender from '../auth/requests'
 import Copyright from './Copyright'
+import { useHistory } from 'react-router-dom'
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -18,17 +19,26 @@ import Typography from '@mui/material/Typography';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
+    const history = useHistory();
     const [userName, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
 
-    const [isEmailIncorrect, setIsEmailIncorrect] = useState(false);
+    const [isUsernameIncorrect, setIsUsernameIncorrect] = useState(false);
+    const [isUsernameFieldClicked, setIsUsernameFieldClicked] = useState(false);
+
     const [isPasswordFieldClicked, setIsPasswordFieldClicked] = useState(false);
     const [isPasswordIncorrect, setIsPasswordIncorrect] = useState(false);
     const [isPasswordConfirmFieldClicked, setIsPasswordConfirmFieldClicked] = useState(false);
     const [isPasswordConfirmIncorrect, setIsPasswordConfirmIncorrect] = useState(false);
 
+    useEffect(() => {
+        if (auth.user) {
+            setEmail(auth.user.email);
+        }
+    }, [auth.user]);
+    
     useEffect(() => {
         if (password !== passwordConfirm) {
             setIsPasswordConfirmIncorrect(true);
@@ -46,36 +56,45 @@ export default function RegisterScreen() {
     }, [password]);
 
     const canSubmit = () => {
-        return (userName.trim() !== "" && email.trim() !== "" && password.trim() !== "" && passwordConfirm.trim !== ""
-            && isEmailIncorrect === false && isPasswordIncorrect === false && isPasswordConfirmIncorrect === false)
+        return (userName.trim() !== "" && password.trim() !== "" && passwordConfirm.trim !== ""
+            && isUsernameIncorrect == false && isPasswordIncorrect === false && isPasswordConfirmIncorrect === false)
     }
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-    };
+        await auth.updateUser(
+            formData.get('userName'),
+            formData.get('password'),
+            formData.get('passwordConfirm')
+        );
+        history.goBack();
+    }
+    
+    const handleCancel = () => {
+        history.goBack();
+    }
+
+    const handleUsernameFieldClicked = () => {
+        setIsUsernameFieldClicked(true);
+    }
 
     function handleUpdateUsername(event) {
         setUserName(event.target.value);
+        if (isUsernameFieldClicked === true) {
+            if (event.target.value === "") {
+                setIsUsernameIncorrect(false);
+            } else if (event.target.value.trim() === "") {
+                setIsUsernameIncorrect(true);
+            } else {
+                setIsUsernameIncorrect(false);
+            }
+        }
     }
 
     const handleClearUsername = () => {
         setUserName("");
-    }
-    
-    async function handleUpdateEmail(event) {
-        setEmail(event.target.value);
-
-        const response = await authRequestSender.existingUser(event.target.value);
-        if (response.data.success === false) {
-            setIsEmailIncorrect(true);
-        } else {
-            setIsEmailIncorrect(false);
-        }
-    }
-
-    const handleClearEmail = () => {
-        setEmail("");
-        setIsEmailIncorrect(false);
+        setIsUsernameFieldClicked(false);
+        setIsUsernameIncorrect(false);
     }
 
     const handlePasswordFieldClicked = () => {
@@ -142,7 +161,10 @@ export default function RegisterScreen() {
                                     autoFocus
                                     variant="standard"
                                     value={userName}
-                                    onChange={handleUpdateUsername}
+                                    onChange={handleUpdateUsername} 
+                                    onFocus={handleUsernameFieldClicked}
+                                    error={isUsernameIncorrect && isUsernameFieldClicked}
+                                    helperText={isUsernameIncorrect && isUsernameFieldClicked && "Username cannot be all whitespace." }
                                     InputLabelProps={{
                                         style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                     }}
@@ -171,20 +193,10 @@ export default function RegisterScreen() {
                                     autoComplete="email"
                                     variant="standard"
                                     value={email}
-                                    onChange={handleUpdateEmail}
-                                    error={isEmailIncorrect}
-                                    helperText={isEmailIncorrect && "An account with this email address already exists." }
                                     InputLabelProps={{
                                         style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                     }}
-                                    InputProps={{
-                                        endAdornment:
-                                            <InputAdornment position="end">
-                                                <IconButton onClick={handleClearEmail} sx={{ top: "-5px" }} >
-                                                    <CancelOutlinedIcon sx={{ color: "black", fontSize: 20 }} />
-                                                </IconButton>
-                                            </InputAdornment>
-                                    }}
+                                    InputProps={{ readOnly: true }}
                                     inputProps={{
                                         style: { paddingLeft: "10px" }
                                     }}
@@ -260,35 +272,38 @@ export default function RegisterScreen() {
                                 />
                             </Grid>
                         </Grid>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            disabled={!canSubmit()}
-                            sx={{
-                                mt: 3, 
-                                mb: 2,
-                                width: 100,
-                                backgroundColor: 'black',
-                                textTransform: 'none',
-                                '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
-                            }}
-                        >
-                            Complete
-                        </Button>
-                        <Button
-                            variant="contained"
-                            sx={{
-                                mt: 3, 
-                                mb: 2,
-                                ml: 20,
-                                width: 100,
-                                backgroundColor: 'black',
-                                textTransform: 'none',
-                                '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
-                            }}
-                        >
-                            Cancel
-                        </Button>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-start' }} >
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                disabled={!canSubmit()}
+                                sx={{
+                                    mt: 3, 
+                                    mb: 2,
+                                    width: 130,
+                                    backgroundColor: 'black',
+                                    textTransform: 'none',
+                                    '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                                }}
+                            >
+                                Complete
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={handleCancel}
+                                sx={{
+                                    mt: 3, 
+                                    mb: 2,
+                                    ml: 20,
+                                    width: 130,
+                                    backgroundColor: 'black',
+                                    textTransform: 'none',
+                                    '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </Box>
                     </Box>
                 </Box>
                 <Copyright sx={{ mt: 15 }} />

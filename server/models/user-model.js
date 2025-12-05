@@ -6,7 +6,7 @@ const UserSchema = new Schema(
     {
         userName: { type: String, required: true },
         email: { type: String, required: true, unique: true },
-        passwordHash: { type: String },
+        passwordHash: { type: String, required: true },
         playlists: [{type: ObjectId, ref: 'Playlist'}],
         avatar: { type: String }
     },

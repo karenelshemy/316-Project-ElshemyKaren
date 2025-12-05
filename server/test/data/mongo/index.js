@@ -20,6 +20,7 @@ async function fillCollection(collection, collectionName, data) {
             const user = new collection({
                 userName: doc.name,
                 email: doc.email,
+                passwordHash: doc.passwordHash,
                 playlists:[]
             });
             await user.save();
