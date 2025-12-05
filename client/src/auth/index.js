@@ -149,9 +149,9 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.updateUser = async function(userName, password, passwordConfirm) {
+    auth.updateUser = async function(userName, password, passwordConfirm, avatar) {
         try {
-            const response = await authRequestSender.updateUser(userName, password, passwordConfirm);
+            const response = await authRequestSender.updateUser(userName, password, passwordConfirm, avatar);
             console.log("Updated Sucessfully");
             authReducer({
                 type: AuthActionType.UPDATE_USER,

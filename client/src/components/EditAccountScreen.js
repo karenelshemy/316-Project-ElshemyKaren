@@ -24,6 +24,7 @@ export default function RegisterScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [avatar, setAvatar] = useState("");
 
     const [isUsernameIncorrect, setIsUsernameIncorrect] = useState(false);
     const [isUsernameFieldClicked, setIsUsernameFieldClicked] = useState(false);
@@ -56,7 +57,7 @@ export default function RegisterScreen() {
     }, [password]);
 
     const canSubmit = () => {
-        return (userName.trim() !== "" && password.trim() !== "" && passwordConfirm.trim !== ""
+        return (userName.trim() !== "" && password.trim() !== "" && passwordConfirm.trim() !== "" && avatar !== ""
             && isUsernameIncorrect == false && isPasswordIncorrect === false && isPasswordConfirmIncorrect === false)
     }
     const handleSubmit = async (event) => {
@@ -65,7 +66,8 @@ export default function RegisterScreen() {
         await auth.updateUser(
             formData.get('userName'),
             formData.get('password'),
-            formData.get('passwordConfirm')
+            formData.get('passwordConfirm'),
+            avatar
         );
         history.goBack();
     }
@@ -135,6 +137,28 @@ export default function RegisterScreen() {
         setIsPasswordConfirmIncorrect(false);
     }
 
+    function handleSelectAvatar(event) {
+        const file = event.target.files[0]
+        if (file.type !== "image/png") {
+            window.alert("File must be a .png.");
+            return;
+        }
+        const image = new Image();
+        image.onload = function() {
+            if (image.width !== 250 || image.height !== 250) {
+                window.alert("Image must be of size 250 x 250.");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function() {
+                setAvatar(reader.result)
+            };
+            reader.readAsDataURL(file);
+        }
+        const imageURL = URL.createObjectURL(file);
+        image.src = imageURL;
+    }
+
     return (
             <Container component="main" maxWidth="xs">
                 <Box
@@ -152,6 +176,39 @@ export default function RegisterScreen() {
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sx={{ mt: 2 }} >
+                                <Avatar src={avatar}
+                                    sx={{
+                                        width: 40, 
+                                        height: 40,
+                                        left: 340, 
+                                        top: 235,
+                                        position: 'absolute'
+                                    }}
+                                    />
+                                    <Button 
+                                        variant="contained"
+                                        component="label"
+                                        sx={{ 
+                                            ml: -10,
+                                            mt: 6,
+                                            backgroundColor: 'black',
+                                            textTransform: 'none',
+                                            position: 'absolute',
+                                            borderRadius: '10px',
+                                            width: '20px',
+                                            height: '22px',
+                                            fontSize: 12,
+                                            '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                                        }}
+                                    >
+                                        Select
+                                        <input
+                                            type="file"
+                                            accept="image/png"
+                                            hidden
+                                            onChange={handleSelectAvatar}
+                                        />
+                                    </Button>
                                 <TextField
                                     autoComplete="uname"
                                     name="userName"

@@ -20,7 +20,8 @@ getLoggedIn = async (req, res) => {
             loggedIn: true,
             user: {
                 userName: loggedInUser.userName,
-                email: loggedInUser.email
+                email: loggedInUser.email,
+                avatar: loggedInUser.avatar
             }
         })
     } catch (err) {
@@ -73,7 +74,8 @@ loginUser = async (req, res) => {
             success: true,
             user: {
                 userName: existingUser.userName,
-                email: existingUser.email              
+                email: existingUser.email,
+                avatar: existingUser.avatar              
             }
         })
 
@@ -95,9 +97,9 @@ logoutUser = async (req, res) => {
 registerUser = async (req, res) => {
     console.log("REGISTERING USER IN BACKEND");
     try {
-        const { userName, email, password, passwordConfirm } = req.body;
-        console.log("create user: " + userName + " " + email + " " + password + " " + passwordConfirm);
-        if (!userName || !email || !password || !passwordConfirm) {
+        const { userName, email, password, passwordConfirm, avatar } = req.body;
+        console.log("create user: " + userName + " " + email + " " + password + " " + passwordConfirm + " " + avatar);
+        if (!userName || !email || !password || !passwordConfirm || !avatar) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -135,7 +137,7 @@ registerUser = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
         console.log("passwordHash: " + passwordHash);
 
-        const newUser = new User({userName, email, passwordHash});
+        const newUser = new User({userName, email, passwordHash, avatar});
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
 
@@ -143,7 +145,8 @@ registerUser = async (req, res) => {
             success: true,
             user: {
                 userName: savedUser.userName,
-                email: savedUser.email              
+                email: savedUser.email,
+                avatar: savedUser.avatar              
             }
         })
     } catch (err) {
@@ -189,9 +192,9 @@ updateUser = async (req, res) => {
             })
         }
         const existingUser = await User.findOne({ _id: userId });
-        const { userName, password, passwordConfirm } = req.body;
-        console.log("update user: " + userName + " " + password + " " + passwordConfirm);
-        if (!userName || !password || !passwordConfirm) {
+        const { userName, password, passwordConfirm, avatar } = req.body;
+        console.log("update user: " + userName + " " + password + " " + passwordConfirm + " " + avatar);
+        if (!userName || !password || !passwordConfirm || !avatar) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -223,6 +226,7 @@ updateUser = async (req, res) => {
         console.log("existingUser: " + existingUser);
 
         existingUser.userName = userName;
+        existingUser.avatar = avatar;
 
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
@@ -231,13 +235,14 @@ updateUser = async (req, res) => {
         existingUser.passwordHash = passwordHash;
 
         const updatedUser = await existingUser.save();
-        console.log("user updated: " + existingUser._id);
+        console.log("user updated: " + updatedUser._id);
 
         return res.status(200).json({
             success: true,
             user: {
-                userName: existingUser.userName,
-                email: existingUser.email,
+                userName: updatedUser.userName,
+                email: updatedUser.email,
+                avatar: updatedUser.avatar
 
             }
         })

@@ -47,7 +47,7 @@ export default function RegisterScreen() {
     }, [password]);
 
     const canSubmit = () => {
-        return (userName.trim() !== "" && email.trim() !== "" && password.trim() !== "" && passwordConfirm.trim !== ""
+        return (userName.trim() !== "" && email.trim() !== "" && password.trim() !== "" && passwordConfirm.trim() !== "" && avatar !== ""
             && isEmailIncorrect === false && isPasswordIncorrect === false && isPasswordConfirmIncorrect === false)
     }
     const handleSubmit = (event) => {
@@ -58,7 +58,7 @@ export default function RegisterScreen() {
             formData.get('email'),
             formData.get('password'),
             formData.get('passwordConfirm'),
-            formData.get('avatar')
+            avatar
         );
     };
 

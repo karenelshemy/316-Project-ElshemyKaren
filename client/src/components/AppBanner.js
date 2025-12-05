@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 
@@ -14,14 +14,16 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
+    const location = useLocation();
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
-
+    
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -36,7 +38,6 @@ export default function AppBanner() {
     }
 
     const handleHouseClick = () => {
-        store.closeCurrentList();
         history.push("/home");
     }
 
@@ -98,11 +99,20 @@ export default function AppBanner() {
         navigationBar = <NavigationBar />;
     }
     
-    function getAccountMenu(loggedIn) {
-        if (loggedIn) 
-            return <div>{}</div>;
-        else
+    function getAccountMenu(loggedIn, user) {
+        if (loggedIn) {
+            console.log(auth.user.avatar)
+            return <Avatar alt={user.userName} src={user.avatar} />
+        } else {
             return <AccountCircle />;
+        }
+    }
+
+    let appBannerTitle = "";
+    if (location.pathname.startsWith("/playlist") || location.pathname.startsWith("/songscatalog")) {
+        appBannerTitle = "The Playlister"
+    } else {
+        appBannerTitle = "";
     }
 
     return (
@@ -113,6 +123,11 @@ export default function AppBanner() {
                         <Home />
                     </IconButton>
                     <Box sx={{ flexGrow: 1 }}>{navigationBar}</Box>
+                    <Box sx={{ flexGrow: 1, ml: -35 }}>
+                        <Typography variant="h4" sx={{ fontSize: 30 }}>
+                            {appBannerTitle}
+                        </Typography>
+                    </Box>
                     <Box sx={{ height: "45px", display: { xs: 'none', md: 'flex' } }}>
                         <IconButton sx={{ backgroundColor: "#EAD9FA", color: "black", width: 40, height: 40, mt: "3px" }}
                             size="large"
@@ -123,7 +138,7 @@ export default function AppBanner() {
                             onClick={handleProfileMenuOpen}
                             color="inherit"
                         >
-                            { getAccountMenu(auth.loggedIn) }
+                            { getAccountMenu(auth.loggedIn, auth.user) }
                         </IconButton>
                     </Box>
                 </Toolbar>

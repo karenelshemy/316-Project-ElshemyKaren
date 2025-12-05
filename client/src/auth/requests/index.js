@@ -43,11 +43,12 @@ export const registerUser = (userName, email, password, passwordConfirm, avatar)
 export const existingUser = (email) => {
     return api.get('/email', { params: { email } });
 }
-export const updateUser = (userName, password, passwordConfirm) => {
+export const updateUser = (userName, password, passwordConfirm, avatar) => {
     return api.put('/update/', {
         userName : userName,
         password : password, 
-        passwordConfirm : passwordConfirm
+        passwordConfirm : passwordConfirm,
+        avatar : avatar
     })
 }
 
