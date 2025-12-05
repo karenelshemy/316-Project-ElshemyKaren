@@ -3,8 +3,10 @@ import Copyright from './Copyright'
 import EditAccountScreen from './EditAccountScreen'
 import HomeWrapper from './HomeWrapper'
 import LoginScreen from './LoginScreen'
+import NavigationBar from './NavigationBar'
 import PlaylistsScreen from './PlaylistsScreen'
 import RegisterScreen from './RegisterScreen'
+import SongCatalogScreen from './SongCatalogScreen'
 import WelcomeScreen from './WelcomeScreen'
 
 /*
@@ -19,7 +21,9 @@ export {
     EditAccountScreen,
     HomeWrapper, 
     LoginScreen,
+    NavigationBar,
     PlaylistsScreen,
     RegisterScreen,
+    SongCatalogScreen,
     WelcomeScreen
 }

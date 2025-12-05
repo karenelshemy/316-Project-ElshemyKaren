@@ -95,9 +95,7 @@ export default function AppBanner() {
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
-        if (store.currentList) {
-            navigationBar = <NavigationBar />;
-        }
+        navigationBar = <NavigationBar />;
     }
     
     function getAccountMenu(loggedIn) {
