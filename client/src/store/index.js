@@ -246,7 +246,7 @@ function GlobalStoreContextProvider(props) {
                 let playlist = data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
-                    let playlistId = playlist._id || playlist.id;
+                    let playlistId = playlist._id;
                     response = await storeRequestSender.updatePlaylistById(playlistId, playlist);
                     data = await response.json();
                     if (data.success) {
@@ -281,7 +281,7 @@ function GlobalStoreContextProvider(props) {
             payload: {}
         });
         tps.clearAllTransactions();
-        history.push("/");
+        history.push("/playlist/");
     }
 
     // THIS FUNCTION CREATES A NEW LIST
@@ -298,7 +298,7 @@ function GlobalStoreContextProvider(props) {
                 payload: newList
             }
             );
-            let newListId = newList._id || newList.id;
+            let newListId = newList._id;
             // IF IT'S A VALID LIST THEN LET'S START EDITING IT
             history.push("/playlist/" + newListId);
         }
@@ -351,7 +351,7 @@ function GlobalStoreContextProvider(props) {
             let data = await response.json();
             store.loadIdNamePairs();
             if (data.success) {
-                history.push("/");
+                history.push("/playlist/");
             }
         }
         processDelete(id);
@@ -398,7 +398,7 @@ function GlobalStoreContextProvider(props) {
             if (data.success) {
                 let playlist = data.playlist;
 
-                let playlistId = playlist._id || playlist.id;
+                let playlistId = playlist._id;
                 response = await storeRequestSender.updatePlaylistById(playlistId, playlist);
                 data = await response.json();
                 if (data.success) {
@@ -406,7 +406,7 @@ function GlobalStoreContextProvider(props) {
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: playlist
                     });
-                    let playlistId = playlist._id || playlist.id;
+                    let playlistId = playlist._id;
                     history.push("/playlist/" + playlistId);
                 }
             }
@@ -515,7 +515,7 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
-            const currentListId = store.currentList._id || store.currentList.id;
+            const currentListId = store.currentList._id;
             const response = await storeRequestSender.updatePlaylistById(currentListId, store.currentList);
             const data = await response.json();
             if (data.success) {

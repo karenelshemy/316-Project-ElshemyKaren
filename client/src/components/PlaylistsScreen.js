@@ -2,15 +2,15 @@ import { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth'
 
-import Box from '@mui/material/Box';
+import PlaylistCard from './PlaylistCard';
+import MUIDeleteModal from './MUIDeleteModal';
+
 import Button from '@mui/material/Button';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import Link from '@mui/material/Link';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import List from '@mui/material/List';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -24,6 +24,10 @@ const PlaylistsScreen = () => {
     const [songTitle, setSongTitle] = useState("");
     const [songArtist, setSongArtist] = useState("");
     const [songYear, setSongYear] = useState("");
+
+    useEffect(() => {
+        store.loadIdNamePairs();
+    }, []);
 
     function handlePlaylistName(event) {
         setPlaylistName(event.target.value);
@@ -64,10 +68,10 @@ const PlaylistsScreen = () => {
     const handleClearSongYear = () => {
         setSongYear("");
     }
-
+    
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>
-            <Grid item xs={5.5} sx={{ borderRight: '1px solid lightgray', height: '630px', marginTop: 2 }}>
+            <Grid item xs={6} sx={{ borderRight: '1px solid lightgray', height: '630px', marginTop: 2 }}>
                 <Typography variant="h4" sx={{ color: "rgb(204, 0, 204)", fontWeight: 1000, paddingLeft: 2, marginTop: 4, fontSize: 35 }}>
                     Playlists
                 </Typography>
@@ -257,6 +261,18 @@ const PlaylistsScreen = () => {
                     >
                         Clear
                     </Button>
+            </Grid>
+            <Grid item xs={6} sx={{ p: 3, mt: 8 }} >
+                <List >
+                    {store.idNamePairs.map((pair) => (
+                        <PlaylistCard   
+                            key={pair._id}
+                            idNamePair={pair}
+                            selected={false}
+                        />
+                    ))} 
+                </List>
+                <MUIDeleteModal />
             </Grid>
         </Grid>
 

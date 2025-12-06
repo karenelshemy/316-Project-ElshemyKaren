@@ -14,7 +14,12 @@ async function clearCollection(collection, collectionName) {
 }
 
 async function fillCollection(collection, collectionName, data) {
-    if (collectionName == "User") {
+    if (collectionName == "Playlist") {
+        for (let i = 0; i < data.playlists.length; i++) {
+            let doc = new collection(data.playlists[i]);
+            await doc.save();
+        }
+    } else if (collectionName == "User") {
         for (let i = 0; i < data.users.length; i++) {
             let doc = data.users[i];
             const user = new collection({
@@ -43,25 +48,14 @@ async function fillCollection(collection, collectionName, data) {
                 'vrG77xwr3/+4UP3/vNj7/xzz++/m13HXfIdQ+ccNSf7jrxiCfuPuaYAS4H3crr6I8fR685tXVPj6E/fEVb7rG2o3TOvN7Uzm3SYC5ozKbbW4cSqntwO+bu6MWSzS9h6TOPYObvb0XLrT9E5MbvQN/wP3Bu/C6cm74H56ffx8V3/cztFN50/x049+FVOOXJe3DMs3/HwWufwtJNL2CPLS9j0db1WNC3EXO392JW/1aQf0eyHy2pBJpGZg4N0knEpZOAdBC2ngA3kwAAEABJREFUGzW4eaVH0OVoSGcZeay5C2XnaEvBqRN1syXBFl0hkboTAzorMSE27UMD6JIZ1syBbZizYwvmb9+E3bZtwO6CKbElxsSamBN72sDtoP/8czg//jbsr38Z9hc+D+ezn4X1uc+i9Stfwuzv/w/2u+fPWLbmCeyx6WXsuXWT8N2KrsH+xngyeaQaSt2koX6OxOYT9RvP6tYrV8reG6Wuz1iXjq4hK/UvvL8BmZeXOxY+Z2rj5wDOk9gp0VMwxBkjQwlE+7cj1rcFXf3b3Ea4Z+9aHLjuaRzzzN9x6uN/xQV/+y0uvec2vENmB+/4y8/lejPecffP8XaZKQzHW9z7S+77Jd7w0K9xziOrcMLqv6D/4QfRv/phDD69GkNrnkT22aehn18DtfY5zNn4knQc69yOY+G2jZjft8ntPOgE7EDoEDMG+qTRbgcdhJ1Ju0xLuRRplU4lH+lEjfKMZAJ6JDpyZXSfRb+GVFI6IsYE8uV4JS/yJG/W0T24HayTdVMGysIOjbItFKdcJJ3cHlvWubJDdKAu1Im6UUfqSp2pOzEgFsTkbX+9BW+7exijYbwEv78w/hzEk9gSY2JNzIk9bcD6u6RjiA31I9agEYlpGMrxZFuXSKNJZ+2jnEzu/7Qyv49Y5ihx9ma2HTe/zv7UnaPrnhUW/u2K2ehLvFMb6lalcLnYrKxfhpXyJYMh03fLsRHLZdzpPZ2FTtI92IfZMrrvvvVlLN34Ag5c+zSWr3kYHX+6A+2/uxWtd/4Ujb+4AZFbfwzc8iM0y/WCv9yCy/56Ky534y2jrreAjnE5nWMkXi5OQkdhOke50fFyKX/u3bfCuf0G5G77Pzemf3ETGPns/PImnC51XXrvbS7f0WXde9Yh/N06eC/xcomsi9dX47CslJmyUwfqQp2oG3WkrtSZuhMDYkFM6LDsPF7dM0mC03OZeUFmYCVxdwlMA6qjGWqB9ONtDYBluMme/mi06kzudCft/NSJZD+Mi87ZTV9xBX8nw1PxWiHygUj1q6TfL6N4du+jtKF/LH53rUi8UGLt6ChCG9JZWLL2j0pkp8FpblNmCC2yP9AqozNH2g4ZvTtkSeCOtIntmCGdCZ1lloxw7FTyca4sS2Zv3Yjo+pdgjcT4uufByOfI2ucxc8sGd8YwR6bM+XK8khd5kne31EFHZJ0dUjdloCyUqUk2MikjZaXMlJ06yCaoQD+JgYv/iAU1sw1qdgcQj0LW2vD80XomMrl/dbR9O4Y2nVpvo3u1OIFnexQidNfiPW/rRNPgFVo5PwEU/1tL3fzeF8KPdwT4YkxTDGqeODtHdxntvReGBVvvp9PO/ziR9NV44+tnisPXxdq95h1d3yibKLn1uzs58ysa6pOAmovwM70RUKJ+xJTRvRWY0QLIvaR4DtrR3cg4V2sYP85EscxdDnouXZ2ERnWK5U0qrqVyj3QcqaF/rDTeIKWaJIYhRGAYAcOAamuUqXy7TOVl2S0bNsMZnv7GdDZ3vJVN/5/9XPtJq1eulLWAp3JVSWRUpVQehJLpehQz1VmmwvcAdRgUTISfEIFdEaBzN0aHnb0hCvAZnj8KjrNMDeW+tTSWeZO+dEXNLgdr0tF1z8q' + 
                 'onXn5zXKI9hUx2WKJ44Uwb7ojQOeOR8TZ24DmGHw6O6AxX6Xtzznp1qtkzS7b+qi5T805OqfryHW91TDUtbJJHa7Ha67JTaHAUUvW7eLsLTIwc9POjygancjp/3CimQ/V4sheU44u03ULs3CZhiObbpjpx04hbYiAi4BszKmZsknXJM7Okd5N9PhH6xZknA85mfYPuQOOx2LVQFYzjq4BhezGN8g0ik4+A+EnRCAoAvxRCjq7rN3oekCcmk7PyHumMY80QhKG+kUgdPT6te2rmmm55Q9FcATnyyaMvGca8yQ7DPWNQOjo9W3fsdrRsRnH5oQpdYxA6Oh1bNxQtRCBPAKho+eRqOprKFyIQHkIhI5eHn5h6RCBmkAgdPSaMFMoZIhAeQhMiaMPZd0fcwpfVizPdmHpKUBA6+BnkXK4aUM7472+NGEaTYmjNzRYPL3ld40mTLGQsVcEQjo/CKhMWeNTEgp8M99PlRWhnRJHR8/XE3LC81PRoJL/uEjYhSFEYGIR0P3SZLW0Xv/VZHTUuhvfv5mDnP/SZZaYEkeXKYxODOFLAPhFw+BzIWEQhhCByUJAJzPAgDh6kAoNY5Nh5j6iFAL1EkGqHF1mShydArR8/ltbxeHPlvvHJIbOLiCEoXoRcJ18fR/g+PZTDdNYazcar8cPfsFfOpgSJafM0cXJtfrEt55VFo5SGh+Qtct90tcNCAq+kZQyYahKBGpcKMcBkmnojduBtVuBnI/1uaFsRMx1RjRyrdEcOzD6vVv4zQI9VYj8fwAAAP//wDfYRgAAAAZJREFUAwDGunAMCwSUrwAAAABJRU5ErkJggg=='
             });
-            await user.save();
 
             for (const list of data.playlists) {
                 if (list.ownerEmail == user.email) {
-                    const playlist = new Playlist({
-                        name: list.name,
-                        songs: list.songs,
-                        ownerEmail: list.ownerEmail
-                    });
-                    await playlist.save();
+                    const playlist = await Playlist.findOne({ name: list.name, ownerEmail: list.ownerEmail });
                     user.playlists.push(playlist._id);
                 }
-            await user.save();
             }
-        }
-    } else if (collectionName == "Playlist") {
-        for (let i = 0; i < data.playlists.length; i++) {
-            let doc = new collection(data.playlists[i]);
-            await doc.save();
+            await user.save();
         }
     }
     console.log(collectionName + " filled");

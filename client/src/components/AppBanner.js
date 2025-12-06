@@ -38,7 +38,7 @@ export default function AppBanner() {
     }
 
     const handleHouseClick = () => {
-        history.push("/home");
+        history.push("/home/");
     }
 
     const menuId = 'primary-search-account-menu';
@@ -89,7 +89,7 @@ export default function AppBanner() {
             }}
         >
             <MenuItem onClick={handleMenuClose}><Link style={{ textDecoration: 'none', color: 'black' }} to='/edit/'>Edit Account</Link></MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}><Link style={{ textDecoration: 'none', color: 'black' }} to='/home/'>Logout</Link></MenuItem>
         </Menu>        
 
     let navigationBar = "";
@@ -97,11 +97,12 @@ export default function AppBanner() {
     if (auth.loggedIn) {
         menu = loggedInMenu;
         navigationBar = <NavigationBar />;
+    } else {
+        navigationBar = <Box sx={{ width: 250}} />
     }
     
     function getAccountMenu(loggedIn, user) {
         if (loggedIn) {
-            console.log(auth.user.avatar)
             return <Avatar alt={user.userName} src={user.avatar} />
         } else {
             return <AccountCircle />;

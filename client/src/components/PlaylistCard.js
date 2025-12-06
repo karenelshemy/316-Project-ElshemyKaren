@@ -1,0 +1,83 @@
+import { useContext, useState } from 'react'
+import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth';
+
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
+import ListItem from '@mui/material/ListItem';
+import Typography from '@mui/material/Typography';
+
+function PlaylistCard(props) {
+    const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
+    const [expandCard, setExpandCard] = useState(false);
+    const { idNamePair } = props;
+
+    function handleLoadList(event, id) {
+        console.log("handleLoadList for " + id);
+        if (!event.target.disabled) {
+            let _id = event.target.id;
+            if (_id.indexOf('list-card-text-') >= 0)
+                _id = ("" + _id).substring("list-card-text-".length);
+
+            console.log("load " + event.target.id);
+
+            // CHANGE THE CURRENT LIST
+            store.setCurrentList(id);
+        }
+    }
+
+    async function handleDeleteList(event, id) {
+        event.stopPropagation();
+        //let _id = event.target.id;
+        //_id = ("" + _id).substring("delete-list-".length);
+        store.markListForDeletion(id);
+    }
+
+    let cardElement =
+        <ListItem
+            id={idNamePair._id}
+            key={idNamePair._id}
+            sx={{ border: "1px solid lightgray", borderRadius:"15px", p: "10px", bgcolor: '#F8E8FF', marginTop: '15px', display: 'flex', height: 60, width: 550 }}
+        >
+            <Avatar alt={auth.user.userName} src={auth.user.avatar} 
+                    sx={{ width: 40, height: 40 }}
+                />
+                <Box sx={{ p: 1, flexDirection: 'column', width: 200 }} >
+                    <Typography sx={{ fontSize: 13, fontWeight: 'bold', position: 'relative', top: -10 }}>
+                        {idNamePair.name}
+                    </Typography>
+                    <Typography sx={{ fontSize: 10, mt: -1 }}>
+                        {auth.user.userName}
+                    </Typography>
+                </Box>
+                <Box sx={{ mt: -2 }}>
+                    <Button 
+                        variant="contained"
+                        sx={{ 
+                            border: '1px solid black', 
+                            bgcolor: "#C70202", 
+                            fontSize: 12, 
+                            textTransform: 'none', 
+                            height: 30, 
+                            width: 40,
+                            '&:hover': { cursor: 'pointer', backgroundColor: 'darkred', border: '1px solid black' }
+                        }}
+                        onClick={(event) => {
+                            handleDeleteList(event, idNamePair._id)
+                        }} aria-label='delete'
+                    >
+                        Delete
+                    </Button>
+                </Box>
+        </ListItem>
+    return (
+        cardElement
+    );
+}
+
+export default PlaylistCard;
