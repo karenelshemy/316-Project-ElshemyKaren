@@ -28,6 +28,7 @@ export const GlobalStoreActionType = {
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
+    PLAY_CURRENT_LIST: "PLAY_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     EDIT_SONG: "EDIT_SONG",
     REMOVE_SONG: "REMOVE_SONG",
@@ -39,6 +40,7 @@ const tps = new jsTPS();
 
 const CurrentModal = {
     NONE : "NONE",
+    PLAY_LIST: "PLAY_LIST",
     DELETE_LIST : "DELETE_LIST",
     EDIT_PLAYLIST : "EDIT_PLAYLIST",
     EDIT_SONG : "EDIT_SONG",
@@ -147,6 +149,20 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
                     currentModal : CurrentModal.EDIT_PLAYLIST,
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            // PLAY A LIST 
+            case GlobalStoreActionType.PLAY_CURRENT_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.PLAY_LIST,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     currentSongIndex: -1,
@@ -400,6 +416,21 @@ function GlobalStoreContextProvider(props) {
         getListToEdit(id);
     }
 
+    store.showPlayListModal = (id) => {
+        async function getListToPlay(id) {
+            let response = await storeRequestSender.getPlaylistById(id);
+            let data = await response.json();
+            if (data.success) {
+                let playlist = data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.PLAY_CURRENT_LIST,
+                    payload: playlist
+                });
+            }
+        }
+        getListToPlay(id);
+    }
+    
     store.hideModals = () => {
         auth.errorMessage = null;
         storeReducer({
@@ -413,6 +444,9 @@ function GlobalStoreContextProvider(props) {
     }
     store.isEditSongModalOpen = () => {
         return store.currentModal === CurrentModal.EDIT_SONG;
+    }
+    store.isPlayListModalOpen = () => {
+        return store.currentModal === CurrentModal.PLAY_LIST;
     }
     store.isEditPlaylistModalOpen = () => {
         return store.currentModal === CurrentModal.EDIT_PLAYLIST;

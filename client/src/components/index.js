@@ -5,6 +5,7 @@ import HomeWrapper from './HomeWrapper'
 import LoginScreen from './LoginScreen'
 import MUIDeleteModal from './MUIDeleteModal'
 import MUIEditPlaylistModal from './MUIEditPlaylistModal'
+import MUIPlayPlaylistModal from './MUIPlayPlaylistModal'
 import NavigationBar from './NavigationBar'
 import PlaylistsScreen from './PlaylistsScreen'
 import RegisterScreen from './RegisterScreen'
@@ -25,6 +26,7 @@ export {
     LoginScreen,
     MUIDeleteModal,
     MUIEditPlaylistModal, 
+    MUIPlayPlaylistModal,
     NavigationBar,
     PlaylistsScreen,
     RegisterScreen,

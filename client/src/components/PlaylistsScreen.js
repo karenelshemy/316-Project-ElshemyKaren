@@ -5,6 +5,7 @@ import AuthContext from '../auth'
 import PlaylistCard from './PlaylistCard';
 import MUIDeleteModal from './MUIDeleteModal';
 import MUIEditPlaylistModal from './MUIEditPlaylistModal';
+import MUIPlayPlaylistModal from './MUIPlayPlaylistModal';
 
 import Button from '@mui/material/Button';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -75,6 +76,8 @@ const PlaylistsScreen = () => {
         modalJSX = <MUIEditPlaylistModal />;
     } else if (store.isDeleteListModalOpen()) {
         modalJSX = <MUIDeleteModal />;
+    } else if (store.isPlayListModalOpen()) {
+        modalJSX = <MUIPlayPlaylistModal />;
     }
     
     return (

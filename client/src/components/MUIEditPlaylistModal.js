@@ -260,7 +260,7 @@ export default function MUIEditPlaylistModal() {
                             Redo 
                         </Button>
                     </Box>
-                    <Button sx={{ color: "white", backgroundColor: '#127036', borderRadius: "7px", width: 100, height: 40, fontSize: 13, borderRadius: 5, ml: 15, textTransform: 'none', p:"5px", '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }}} variant="contained" onClick={handleCloseModal}> Close </Button>
+                    <Button sx={{ color: "white", backgroundColor: '#127036', borderRadius: "7px", width: 100, height: 40, fontSize: 13, borderRadius: 5, ml: 15, textTransform: 'none', p:"5px", '&:hover': { cursor: 'pointer', backgroundColor: '#255941' }}} variant="contained" onClick={handleCloseModal}> Close </Button>
                 </Box>
             </Box>
         </Box>

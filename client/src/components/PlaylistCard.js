@@ -44,6 +44,10 @@ function PlaylistCard(props) {
         store.showEditPlaylistModal(id);
     }
 
+    async function handlePlayList(event, id) {
+        store.showPlayListModal(id);
+    }
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -95,6 +99,40 @@ function PlaylistCard(props) {
                         }} aria-label='edit'
                     >
                         Edit
+                    </Button>
+                    <Button 
+                        variant="contained"
+                        sx={{ 
+                            border: '1px solid black', 
+                            bgcolor: "#307502", 
+                            fontSize: 12, 
+                            textTransform: 'none', 
+                            height: 30, 
+                            width: 10,
+                            '&:hover': { cursor: 'pointer', backgroundColor: '#255941', border: '1px solid black' }
+                        }}
+                        onClick={(event) => {
+                            handleEditList(event, idNamePair._id)
+                        }} aria-label='copy'
+                    >
+                        Copy
+                    </Button>
+                    <Button 
+                        variant="contained"
+                        sx={{ 
+                            border: '1px solid black', 
+                            bgcolor: 'rgb(204, 0, 204)', 
+                            fontSize: 12, 
+                            textTransform: 'none', 
+                            height: 30, 
+                            width: 10,
+                            '&:hover': { cursor: 'pointer', backgroundColor: '#CC54C8', border: '1px solid black' }
+                        }}
+                        onClick={(event) => {
+                            handlePlayList(event, idNamePair._id)
+                        }} aria-label='play'
+                    >
+                        Play
                     </Button>
                 </Box>
         </ListItem>
