@@ -4,6 +4,7 @@ import AuthContext from '../auth'
 
 import PlaylistCard from './PlaylistCard';
 import MUIDeleteModal from './MUIDeleteModal';
+import MUIEditPlaylistModal from './MUIEditPlaylistModal';
 
 import Button from '@mui/material/Button';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -67,6 +68,13 @@ const PlaylistsScreen = () => {
 
     const handleClearSongYear = () => {
         setSongYear("");
+    }
+
+    let modalJSX = "";
+    if (store.isEditPlaylistModalOpen()) {
+        modalJSX = <MUIEditPlaylistModal />;
+    } else if (store.isDeleteListModalOpen()) {
+        modalJSX = <MUIDeleteModal />;
     }
     
     return (
@@ -272,7 +280,7 @@ const PlaylistsScreen = () => {
                         />
                     ))} 
                 </List>
-                <MUIDeleteModal />
+                { modalJSX }
             </Grid>
         </Grid>
 

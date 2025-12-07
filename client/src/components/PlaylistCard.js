@@ -33,9 +33,15 @@ function PlaylistCard(props) {
 
     async function handleDeleteList(event, id) {
         event.stopPropagation();
+        store.showDeleteListModal(id);
         //let _id = event.target.id;
         //_id = ("" + _id).substring("delete-list-".length);
-        store.markListForDeletion(id);
+    }
+
+    async function handleEditList(event, id) {
+        event.stopPropagation();
+        store.setCurrentList(id);
+        store.showEditPlaylistModal(id);
     }
 
     let cardElement =
@@ -55,7 +61,7 @@ function PlaylistCard(props) {
                         {auth.user.userName}
                     </Typography>
                 </Box>
-                <Box sx={{ mt: -2 }}>
+                <Box sx={{ display: 'flex', gap: 1, mt: -2 }}>
                     <Button 
                         variant="contained"
                         sx={{ 
@@ -72,6 +78,23 @@ function PlaylistCard(props) {
                         }} aria-label='delete'
                     >
                         Delete
+                    </Button>
+                    <Button 
+                        variant="contained"
+                        sx={{ 
+                            border: '1px solid black', 
+                            bgcolor: "#3C58D6", 
+                            fontSize: 12, 
+                            textTransform: 'none', 
+                            height: 30, 
+                            width: 10,
+                            '&:hover': { cursor: 'pointer', backgroundColor: '#334BB5', border: '1px solid black' }
+                        }}
+                        onClick={(event) => {
+                            handleEditList(event, idNamePair._id)
+                        }} aria-label='edit'
+                    >
+                        Edit
                     </Button>
                 </Box>
         </ListItem>

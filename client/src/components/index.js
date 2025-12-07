@@ -3,6 +3,8 @@ import Copyright from './Copyright'
 import EditAccountScreen from './EditAccountScreen'
 import HomeWrapper from './HomeWrapper'
 import LoginScreen from './LoginScreen'
+import MUIDeleteModal from './MUIDeleteModal'
+import MUIEditPlaylistModal from './MUIEditPlaylistModal'
 import NavigationBar from './NavigationBar'
 import PlaylistsScreen from './PlaylistsScreen'
 import RegisterScreen from './RegisterScreen'
@@ -21,6 +23,8 @@ export {
     EditAccountScreen,
     HomeWrapper, 
     LoginScreen,
+    MUIDeleteModal,
+    MUIEditPlaylistModal, 
     NavigationBar,
     PlaylistsScreen,
     RegisterScreen,

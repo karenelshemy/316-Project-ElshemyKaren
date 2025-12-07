@@ -36,7 +36,7 @@ export default function MUIDeleteModal() {
 
     return (
         <Modal
-        open={store.listMarkedForDeletion !== null}
+        open={store.currentModal === "DELETE_LIST"}
         aria-labelledby="delete-modal-title"
         aria-describedby="delete-modal-description"
         >
@@ -54,8 +54,8 @@ export default function MUIDeleteModal() {
                     Doing so means it will be permanently removed.
                 </Typography>
                 <Box sx={{display: 'flex', justifyContent: 'flex-start', gap: 50 }}>
-                    <Button sx={{ color: "white", backgroundColor: "black", borderRadius: "7px", width: 150, height: 40, fontSize: 13, textTransform: 'none', p:"5px", mt: 14, ml: 6}} variant="contained" onClick={handleDeleteList}> Delete Playlist </Button>
-                    <Button sx={{ color: "white", backgroundColor: "black", borderRadius: "7px", width: 150, height: 40, fontSize: 13, textTransform: 'none', p:"5px", mt: 14 }} variant="contained" onClick={handleCloseModal}> Cancel </Button>
+                    <Button sx={{ color: "white", backgroundColor: "black", borderRadius: "7px", width: 150, height: 40, fontSize: 13, textTransform: 'none', p:"5px", mt: 14, ml: 6 ,'&:hover': { cursor: 'pointer', backgroundColor: '#333232' }}} variant="contained" onClick={handleDeleteList}> Delete Playlist </Button>
+                    <Button sx={{ color: "white", backgroundColor: "black", borderRadius: "7px", width: 150, height: 40, fontSize: 13, textTransform: 'none', p:"5px", mt: 14, '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }}} variant="contained" onClick={handleCloseModal}> Cancel </Button>
                 </Box>
             </Box>
         </Box>

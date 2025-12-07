@@ -40,6 +40,7 @@ const tps = new jsTPS();
 const CurrentModal = {
     NONE : "NONE",
     DELETE_LIST : "DELETE_LIST",
+    EDIT_PLAYLIST : "EDIT_PLAYLIST",
     EDIT_SONG : "EDIT_SONG",
     ERROR : "ERROR"
 }
@@ -145,7 +146,7 @@ function GlobalStoreContextProvider(props) {
             // UPDATE A LIST
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
-                    currentModal : CurrentModal.NONE,
+                    currentModal : CurrentModal.EDIT_PLAYLIST,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     currentSongIndex: -1,
@@ -261,8 +262,7 @@ function GlobalStoreContextProvider(props) {
                                         idNamePairs: pairsArray,
                                         playlist: playlist
                                     }
-                                });
-                                store.setCurrentList(id);
+                                })
                             }
                         }
                         getListPairs(playlist);
@@ -363,6 +363,20 @@ function GlobalStoreContextProvider(props) {
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
+    store.showDeleteListModal = (id) => {
+        async function getListToDelete(id) {
+            let response = await storeRequestSender.getPlaylistById(id);
+            let data = await response.json();
+            if (data.success) {
+                let playlist = data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
+                    payload: {id: id, playlist: playlist}
+                });
+            }
+        }
+        getListToDelete(id);
+    }
 
     store.showEditSongModal = (songIndex, songToEdit) => {
         storeReducer({
@@ -370,18 +384,38 @@ function GlobalStoreContextProvider(props) {
             payload: {currentSongIndex: songIndex, currentSong: songToEdit}
         });        
     }
+    store.showEditPlaylistModal = (id) => {
+        tps.clearAllTransactions();
+        async function getListToEdit(id) {
+            let response = await storeRequestSender.getPlaylistById(id);
+            let data = await response.json();
+            if (data.success) {
+                let playlist = data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
+            }
+        }
+        getListToEdit(id);
+    }
+
     store.hideModals = () => {
         auth.errorMessage = null;
         storeReducer({
             type: GlobalStoreActionType.HIDE_MODALS,
             payload: {}
-        });    
+        });   
+        tps.clearAllTransactions();
     }
     store.isDeleteListModalOpen = () => {
         return store.currentModal === CurrentModal.DELETE_LIST;
     }
     store.isEditSongModalOpen = () => {
         return store.currentModal === CurrentModal.EDIT_SONG;
+    }
+    store.isEditPlaylistModalOpen = () => {
+        return store.currentModal === CurrentModal.EDIT_PLAYLIST;
     }
     store.isErrorModalOpen = () => {
         return store.currentModal === CurrentModal.ERROR;
@@ -392,6 +426,7 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
     // moveItem, updateItem, updateCurrentList, undo, and redo
     store.setCurrentList = function (id) {
+        tps.clearAllTransactions();
         async function asyncSetCurrentList(id) {
             let response = await storeRequestSender.getPlaylistById(id);
             let data = await response.json();
@@ -406,8 +441,6 @@ function GlobalStoreContextProvider(props) {
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: playlist
                     });
-                    let playlistId = playlist._id;
-                    history.push("/playlist/" + playlistId);
                 }
             }
         }
