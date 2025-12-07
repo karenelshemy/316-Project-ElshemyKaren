@@ -106,7 +106,7 @@ function GlobalStoreContextProvider(props) {
             // CREATE A NEW LIST
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
                 return setStore({
-                    currentModal : CurrentModal.NONE,
+                    currentModal : CurrentModal.EDIT_PLAYLIST,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     currentSongIndex: -1,
@@ -314,9 +314,6 @@ function GlobalStoreContextProvider(props) {
                 payload: newList
             }
             );
-            let newListId = newList._id;
-            // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-            history.push("/playlist/" + newListId);
         }
         else {
             console.log("FAILED TO CREATE A NEW LIST");

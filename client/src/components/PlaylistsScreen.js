@@ -7,6 +7,7 @@ import MUIDeleteModal from './MUIDeleteModal';
 import MUIEditPlaylistModal from './MUIEditPlaylistModal';
 import MUIPlayPlaylistModal from './MUIPlayPlaylistModal';
 
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import Grid from '@mui/material/Grid';
@@ -16,6 +17,7 @@ import List from '@mui/material/List';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const PlaylistsScreen = () => {
     const { auth } = useContext(AuthContext);
@@ -273,18 +275,38 @@ const PlaylistsScreen = () => {
                         Clear
                     </Button>
             </Grid>
-            <Grid item xs={6} sx={{ p: 3, mt: 8 }} >
-                <List >
-                    {store.idNamePairs.map((pair) => (
-                        <PlaylistCard   
-                            key={pair._id}
-                            idNamePair={pair}
-                            selected={false}
-                        />
-                    ))} 
-                </List>
-                { modalJSX }
+            <Grid item xs={6} sx={{p: 3, display: 'flex', height: 500 }} >
+                <Box sx={{ mt: 8, overflow: 'scroll' }}>
+                    <List >
+                        {store.idNamePairs.map((pair) => (
+                            <PlaylistCard   
+                                key={pair._id}
+                                idNamePair={pair}
+                                selected={false}
+                            />
+                        ))} 
+                    </List>
+                 </Box>
             </Grid>
+            { modalJSX }
+            <Button
+                variant="contained"
+                startIcon={<AddCircleOutlineIcon />}
+                sx={{ 
+                    mt: -25,
+                    backgroundColor: '#583A8C',
+                    textTransform: 'none',
+                    borderRadius: '30px',
+                    width: '150px',
+                    height: '45px',
+                    ml: 80,
+                    fontSize: 15,
+                    '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                }}
+                onClick={() => store.createNewList()}
+            >
+                New Playlist
+            </Button>
         </Grid>
 
     )
