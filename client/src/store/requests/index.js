@@ -27,6 +27,20 @@ export const createPlaylist = async (newListName, newSongs, userEmail) => {
     });
     return response;
 }
+
+export const createSong = async (songTitle, songArtist, songYear, songYouTubeId) => {
+    const response = await fetch(`${baseURL}/song/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        // SPECIFY THE PAYLOAD
+        body: JSON.stringify({ title: songTitle, artist: songArtist, year: songYear, youTubeId: songYouTubeId })
+    });
+    return response;
+}
+
 export const deletePlaylistById = async (id) => {
     const response = await fetch(`${baseURL}/playlist/${id}`, {
         method: "DELETE",
@@ -36,6 +50,13 @@ export const deletePlaylistById = async (id) => {
 }
 export const getPlaylistById = async (id) => {
     const response = await fetch(`${baseURL}/playlist/${id}`, {
+        method: "GET",
+        credentials: "include"
+    });
+    return response;
+}
+export const getSongById = async (id) => {
+    const response = await fetch(`${baseURL}/song/${id}`, {
         method: "GET",
         credentials: "include"
     });
@@ -79,8 +100,10 @@ export const querySongs = async (query) => {
 
 const apis = {
     createPlaylist,
+    createSong,
     deletePlaylistById,
     getPlaylistById,
+    getSongById,
     getPlaylistPairs,
     updatePlaylistById,
     queryPlaylists, 

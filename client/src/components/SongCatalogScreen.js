@@ -3,6 +3,7 @@ import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth'
 
 import SongCard from './SongCard';
+import MUIAddSongModal from './MUIAddSongModal';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -24,12 +25,6 @@ const SongCatalogScreen = () => {
     const [songArtist, setSongArtist] = useState("");
     const [songYear, setSongYear] = useState("");
 
-    useEffect(() => {
-        if (auth.user) {
-            store.querySongs({ user: auth.user.email });
-        }
-    }, [auth.user]);
-    
     function handleSongTitle(event) {
         setSongTitle(event.target.value);
     }
@@ -56,8 +51,7 @@ const SongCatalogScreen = () => {
 
     const handleSearchSongs = () => {
         if (!songTitle.trim() && !songArtist.trim() && !songYear) {
-            store.loadIdNamePairs();
-            return;
+            store.clearSongs();
         }
         store.querySongs({ 
             title: songTitle.trim().toLowerCase(),
@@ -70,6 +64,7 @@ const SongCatalogScreen = () => {
         setSongTitle("");
         setSongArtist("");
         setSongYear("");
+        store.clearSongs();
     }
 
     const handleKeyPress = (event) => {
@@ -78,6 +73,14 @@ const SongCatalogScreen = () => {
         }
     }
 
+    const handleAddSong = () => {
+        store.showAddSongCatalogModal({ title: "", artist: "", year: "", youTubeId: "" });
+    }
+
+    let modalJSX = "";
+        if (store.isAddSongCatalogModalOpen()) {
+            modalJSX = <MUIAddSongModal />;
+        }
     
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>
@@ -232,6 +235,7 @@ const SongCatalogScreen = () => {
             <Button
                 variant="contained"
                 startIcon={<AddCircleOutlineIcon />}
+                onClick={(event) => { handleAddSong(event) }}
                 sx={{ 
                     mt: -20,
                     backgroundColor: '#583A8C',
@@ -246,6 +250,7 @@ const SongCatalogScreen = () => {
             >
                 New Song
             </Button>
+            { modalJSX }
         </Grid>
 
     )

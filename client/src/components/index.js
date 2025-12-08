@@ -6,6 +6,7 @@ import LoginScreen from './LoginScreen'
 import MUIDeleteModal from './MUIDeleteModal'
 import MUIEditPlaylistModal from './MUIEditPlaylistModal'
 import MUIPlayPlaylistModal from './MUIPlayPlaylistModal'
+import MUIAddSongModal from './MUIAddSongModal'
 import NavigationBar from './NavigationBar'
 import PlaylistsScreen from './PlaylistsScreen'
 import RegisterScreen from './RegisterScreen'
@@ -29,6 +30,7 @@ export {
     MUIDeleteModal,
     MUIEditPlaylistModal, 
     MUIPlayPlaylistModal,
+    MUIAddSongModal,
     NavigationBar,
     PlaylistsScreen,
     RegisterScreen,

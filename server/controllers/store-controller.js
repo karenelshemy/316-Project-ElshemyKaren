@@ -29,7 +29,7 @@ createPlaylist = (req, res) => {
     if (!playlist) {
         return res.status(400).json({ success: false, error: err })
     }
-
+    
     User.findOne({ _id: req.userId }, (err, user) => {
         console.log("user found: " + JSON.stringify(user));
         user.playlists.push(playlist._id);
@@ -51,6 +51,53 @@ createPlaylist = (req, res) => {
             });
     })
 }
+
+createSong = async (req, res) => {
+    if(auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        })
+    }
+    const user = await User.findOne({ _id: req.userId });
+    const body = req.body;
+    console.log("createSong body: " + JSON.stringify(body));
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a Song',
+        })
+    }
+    
+    const song = new Song({
+        title: body.title,
+        artist: body.artist,
+        year: body.year,
+        youTubeId: body.youTubeId,
+        users: [user.email],
+        playlists: 0
+    });
+    
+    console.log("song: " + song.toString());
+    if (!song) {
+        return res.status(400).json({ success: false, error: err })
+    }
+
+    song
+        .save()
+        .then(() => {
+            return res.status(201).json({
+                success: true,
+                song: song
+            });
+        })
+        .catch(error => {
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'Song Not Created!'
+            })
+        })
+}
+
 deletePlaylist = async (req, res) => {
     if(auth.verifyUser(req) === null){
         return res.status(400).json({
@@ -124,6 +171,24 @@ getPlaylistById = async (req, res) => {
         asyncFindUser(list);
     }).catch(err => console.log(err))
 }
+
+getSongById = async (req, res) => {
+    if(auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        })
+    }
+    console.log("Find Song with id: " + JSON.stringify(req.params.id));
+
+    await Song.findById({ _id: req.params.id }, (err, song) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err });
+        }
+        console.log("Found song: " + JSON.stringify(song));
+        return res.status(200).json({ success: true, song: song });
+    }).catch(err => console.log(err))
+}
+
 
 getPlaylistPairs = async (req, res) => {
     if(auth.verifyUser(req) === null){
@@ -409,8 +474,10 @@ querySongs = async (req, res) => {
 
 module.exports = {
     createPlaylist,
+    createSong,
     deletePlaylist,
     getPlaylistById,
+    getSongById,
     getPlaylistPairs,
     getPlaylists,
     updatePlaylist,

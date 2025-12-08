@@ -5,6 +5,9 @@ import AuthContext from '../auth';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 
@@ -12,6 +15,10 @@ function SongCard(props) {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const { song } = props;
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchEl, setAnchEl] = useState(null);
+    const isMenuOpen = Boolean(anchorEl);
+    const isMenu2Open = Boolean(anchEl);
 
     let ownedByUser = false;
     for (const user of song.users) {
@@ -20,6 +27,29 @@ function SongCard(props) {
             break;
         }
     }
+    
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleMenu2Open = (event) => {
+        setAnchEl(event.currentTarget);
+    };
+
+    const handleMenu2Close = () => {
+        setAnchEl(null);
+    };
+
+    async function handleAddToPlaylist(event, id) {
+        event.stopPropagation();
+        store.addSongToPlaylist(song._id, id);
+        handleMenu2Close();
+        handleMenuClose();
+    } 
 
     let cardElement =
         <ListItem
@@ -46,6 +76,45 @@ function SongCard(props) {
                     Playlists: {song.playlists}
                 </Typography>
             </Box>
+            <IconButton onClick={handleMenuOpen} sx={{ position: 'absolute', top: 7, right: 11 }}
+            >
+                <MoreVertIcon style={{ color: 'black' }}/>
+            </IconButton>
+            <Menu
+                id='song-menu'
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+            >
+                <MenuItem onClick={handleMenu2Open} sx={{ py: 2, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Add to Playlist</MenuItem>
+                <MenuItem onClick={handleMenuClose} sx={{ py: 2, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Edit Song</MenuItem>
+                <MenuItem onClick={handleMenuClose} sx={{ py: 2, height: 60, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Remove from Catalog</MenuItem>
+            </Menu>
+            <Menu
+                id='playlist-menu'
+                anchorEl={anchEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={isMenu2Open}
+                onClose={handleMenu2Close}
+            >
+            </Menu>
         </ListItem>
     return (
         cardElement
