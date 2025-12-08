@@ -73,6 +73,35 @@ const PlaylistsScreen = () => {
         setSongYear("");
     }
 
+    const handleSearchPlaylists = () => {
+        if (!playlistName.trim() && !userName.trim() && !songTitle.trim() && !songArtist.trim() && !songYear.trim()) {
+            store.loadIdNamePairs();
+            return;
+        }
+        store.queryPlaylists({ 
+            name : playlistName.trim().toLowerCase(),
+            owner: userName.trim().toLowerCase(),
+            title: songTitle.trim().toLowerCase(),
+            artist: songArtist.trim().toLowerCase(),
+            year: songYear.trim().toString() 
+        })
+    }
+
+    function handleClear(event) {
+        setPlaylistName("");
+        setUserName("");
+        setSongTitle("");
+        setSongArtist("");
+        setSongYear("");
+        store.loadIdNamePairs();
+    }
+
+    const handleKeyPress = (event) => {
+        if (event.code === 'Enter') {
+            handleSearchPlaylists();
+        }
+    }
+
     let modalJSX = "";
     if (store.isEditPlaylistModalOpen()) {
         modalJSX = <MUIEditPlaylistModal />;
@@ -98,6 +127,7 @@ const PlaylistsScreen = () => {
                                 variant="standard"
                                 value={playlistName}
                                 onChange={handlePlaylistName}
+                                onKeyDown={handleKeyPress}
                                 InputLabelProps={{
                                     style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                 }}
@@ -129,6 +159,7 @@ const PlaylistsScreen = () => {
                                 variant="standard"
                                 value={userName}
                                 onChange={handleUserName}
+                                onKeyDown={handleKeyPress}
                                 InputLabelProps={{
                                     style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                 }}
@@ -159,6 +190,7 @@ const PlaylistsScreen = () => {
                                 variant="standard"
                                 value={songTitle}
                                 onChange={handleSongTitle}
+                                onKeyDown={handleKeyPress}
                                 InputLabelProps={{
                                     style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                 }}
@@ -189,6 +221,7 @@ const PlaylistsScreen = () => {
                                 variant="standard"
                                 value={songArtist}
                                 onChange={handleSongArtist}
+                                onKeyDown={handleKeyPress}
                                 InputLabelProps={{
                                     style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                 }}
@@ -219,6 +252,7 @@ const PlaylistsScreen = () => {
                                 variant="standard"
                                 value={songYear}
                                 onChange={handleSongYear}
+                                onKeyDown={handleKeyPress}
                                 InputLabelProps={{
                                     style: { color: "black", top: "-5px", left: "10px", fontSize: 15 }
                                 }}
@@ -244,6 +278,7 @@ const PlaylistsScreen = () => {
                     <Button
                         variant="contained"
                         startIcon={<SearchIcon />}
+                        onClick={handleSearchPlaylists}
                         sx={{
                             mt: 6, 
                             backgroundColor: '#583A8C',
@@ -253,13 +288,14 @@ const PlaylistsScreen = () => {
                             height: '45px',
                             ml: 2,
                             fontSize: 15,
-                            '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                            '&:hover': { cursor: 'pointer', backgroundColor: '#812AB8' }
                         }}
                     >
                         Search
                     </Button>
                     <Button
                         variant="contained"
+                        onClick={handleClear}
                         sx={{
                             mt: 6, 
                             backgroundColor: '#583A8C',
@@ -269,7 +305,7 @@ const PlaylistsScreen = () => {
                             height: '45px',
                             ml: 29,
                             fontSize: 15,
-                            '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                            '&:hover': { cursor: 'pointer', backgroundColor: '#812AB8' }
                         }}
                     >
                         Clear
@@ -301,7 +337,7 @@ const PlaylistsScreen = () => {
                     height: '45px',
                     ml: 80,
                     fontSize: 15,
-                    '&:hover': { cursor: 'pointer', backgroundColor: '#333232' }
+                    '&:hover': { cursor: 'pointer', backgroundColor: '#812AB8' }
                 }}
                 onClick={() => store.createNewList()}
             >

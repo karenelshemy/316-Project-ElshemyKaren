@@ -61,12 +61,21 @@ export const updatePlaylistById = async (id, playlist) => {
     return response;
 }
 
+export const queryPlaylists = async (query) => {
+    const response = await fetch(`${baseURL}/playlists/query?${query}`, {
+        method: "GET",
+        credentials: "include",
+    });
+    return response;
+}
+
 const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
     getPlaylistPairs,
-    updatePlaylistById
+    updatePlaylistById,
+    queryPlaylists
 }
 
 export default apis

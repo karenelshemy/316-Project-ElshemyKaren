@@ -116,13 +116,14 @@ getPlaylistById = async (req, res) => {
                 }
                 else {
                     console.log("incorrect user!");
-                    return res.status(400).json({ success: false, description: "authentication error" });
+                    return res.status(200).json({ success: true, playlist: list })
                 }
             });
         }
         asyncFindUser(list);
     }).catch(err => console.log(err))
 }
+
 getPlaylistPairs = async (req, res) => {
     if(auth.verifyUser(req) === null){
         return res.status(400).json({
@@ -130,40 +131,47 @@ getPlaylistPairs = async (req, res) => {
         })
     }
     console.log("getPlaylistPairs");
-    await User.findOne({ _id: req.userId }, (err, user) => {
+
+    try {
+        const user = await User.findOne({ _id: req.userId });
         console.log("find user with id " + req.userId);
         async function asyncFindList(email) {
             console.log("find all Playlists owned by " + email);
-            await Playlist.find({ ownerEmail: email }, (err, playlists) => {
+            try {
+                const playlists = await Playlist.find({ ownerEmail: email })
                 console.log("found Playlists: " + JSON.stringify(playlists));
-                if (err) {
-                    return res.status(400).json({ success: false, error: err })
-                }
                 if (!playlists) {
                     console.log("!playlists.length");
                     return res
                         .status(404)
                         .json({ success: false, error: 'Playlists not found' })
-                }
-                else {
+                } else {
                     console.log("Send the Playlist pairs");
                     // PUT ALL THE LISTS INTO ID, NAME PAIRS
                     let pairs = [];
                     for (let key in playlists) {
                         let list = playlists[key];
+                        let user = await User.findOne({ email: list.ownerEmail });
                         let pair = {
                             _id: list._id,
-                            name: list.name
+                            name: list.name,
+                            userName: user.userName
                         };
                         pairs.push(pair);
                     }
                     return res.status(200).json({ success: true, idNamePairs: pairs })
                 }
-            }).catch(err => console.log(err))
-        }
+            } catch(err) {
+                console.log(err)
+                return res.status(400).json({ success: false, error: err })
+            }
+        }  
         asyncFindList(user.email);
-    }).catch(err => console.log(err))
+    } catch (err) {
+        console.log(err);
+    }
 }
+
 getPlaylists = async (req, res) => {
     if(auth.verifyUser(req) === null){
         return res.status(400).json({
@@ -252,11 +260,91 @@ updatePlaylist = async (req, res) => {
         });
     }
 }
+
+queryPlaylists = async (req, res) => {
+    const query = req.query;
+
+    if (!query) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide something to search.'
+        })
+    }
+    try {
+        let playlists = await Playlist.find({});
+        let filteredPlaylists = [];
+
+        for (let playlist of playlists) {
+            let meetsCriteria = true;
+            
+            if (query.name) {
+                if (!playlist.name.trim().toLowerCase().includes(query.name.trim().toLowerCase())) {
+                    meetsCriteria = false;
+                }
+            }
+            if (query.owner) {
+                if (!playlist.ownerEmail.trim().toLowerCase().includes(query.owner.trim().toLowerCase())) {
+                    meetsCriteria = false;
+                }
+            }
+            if (query.title || query.artist || query.year) {
+                let doesSongMeet = false;
+                for (let song of playlist.songs) {
+                    let songMeetsCriteria = true;
+                    if (query.title && song.title.trim().toLowerCase() !== query.title.trim().toLowerCase()) {
+                        songMeetsCriteria = false;
+                    }
+                    if (query.artist && song.artist.trim().toLowerCase() !== query.artist.trim().toLowerCase()) {
+                        songMeetsCriteria = false;
+                    }
+                    if (query.year && song.year.toString() !== query.year.toString()) {
+                        songMeetsCriteria = false;
+                    }
+                    if (songMeetsCriteria === true) {
+                        doesSongMeet = true;
+                        break;
+                    }
+                }
+                if (doesSongMeet === false) {
+                    meetsCriteria = false;
+                }
+            }
+            
+            if (meetsCriteria === true) {
+                filteredPlaylists.push(playlist);
+            }
+        }
+
+        let pairs = [];
+        for (let key in filteredPlaylists) {
+            let list = filteredPlaylists[key];
+            let user = await User.findOne({ email: list.ownerEmail });
+            let pair = {
+                _id: list._id,
+                name: list.name,
+                userName: user.userName
+            };
+            pairs.push(pair)
+        }
+
+        if (filteredPlaylists.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No playlists meet the given criteria!"
+            })
+        } else {
+            return res.status(200).json({ success: true, idNamePairs: pairs })
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
 module.exports = {
     createPlaylist,
     deletePlaylist,
     getPlaylistById,
     getPlaylistPairs,
     getPlaylists,
-    updatePlaylist
+    updatePlaylist,
+    queryPlaylists
 }

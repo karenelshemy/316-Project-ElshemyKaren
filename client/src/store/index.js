@@ -320,6 +320,26 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.queryPlaylists = async function (query) {
+        let queryCriteria = new URLSearchParams(query).toString();
+        const response = await storeRequestSender.queryPlaylists(queryCriteria);
+        const data = await response.json();
+        if (data.success) {
+            let pairsArray = data.idNamePairs;
+            console.log(pairsArray);
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: pairsArray
+            });
+        } else {
+            console.log("FAILED TO FIND PLAYLISTS THAT MATCH CRITERIA");
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: []
+            });
+        }
+    }
+
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = function () {
         async function asyncLoadIdNamePairs() {

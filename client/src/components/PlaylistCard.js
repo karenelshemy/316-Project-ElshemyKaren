@@ -16,7 +16,7 @@ function PlaylistCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [expandCard, setExpandCard] = useState(false);
     const { idNamePair } = props;
-
+    
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
@@ -62,7 +62,7 @@ function PlaylistCard(props) {
                         {idNamePair.name}
                     </Typography>
                     <Typography sx={{ fontSize: 10, mt: -1 }}>
-                        {auth.user.userName}
+                        {idNamePair.userName}
                     </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, mt: -2 }}>
@@ -75,6 +75,7 @@ function PlaylistCard(props) {
                             textTransform: 'none', 
                             height: 30, 
                             width: 40,
+                            display: idNamePair.userName === auth.user.userName ? 'flex' : 'none',
                             '&:hover': { cursor: 'pointer', backgroundColor: 'darkred', border: '1px solid black' }
                         }}
                         onClick={(event) => {
@@ -92,6 +93,7 @@ function PlaylistCard(props) {
                             textTransform: 'none', 
                             height: 30, 
                             width: 10,
+                            display: idNamePair.userName === auth.user.userName ? 'flex' : 'none',
                             '&:hover': { cursor: 'pointer', backgroundColor: '#334BB5', border: '1px solid black' }
                         }}
                         onClick={(event) => {

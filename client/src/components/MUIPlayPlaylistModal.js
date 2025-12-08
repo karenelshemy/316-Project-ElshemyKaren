@@ -42,36 +42,46 @@ export default function MUIPlayPlaylistModal() {
         playlist.push(song.youTubeId);
     }
     const currentSong = useRef(0);
+    const player = useRef(null);
 
     useEffect(() => {
         // Loads the IFrame Player API code asynchronously.
-        let tag = document.createElement('script');
+        if (!window.YT) {
+            let tag = document.createElement('script');
 
-        tag.src = "https://www.youtube.com/iframe_api";
-        let firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            tag.src = "https://www.youtube.com/iframe_api";
+            let firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        // Creates an <iframe> (and YouTube player) after the API code downloads.
+        function onYouTubeIframeAPIReady() {
+            currentSong.current = 0;
+            if (!player.current) {
+                player.current = new window.YT.Player('youtube_test_player', {
+                    height: '390',
+                    width: '640',
+                    videoId: playlist[currentSong.current],
+                    useLocalHTML: true,
+                    playerVars: {
+                    'playsinline': 1
+                    },
+                    events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+        }
 
         window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-    }, []);
-
-    // Creates an <iframe> (and YouTube player) after the API code downloads.
-    const player = useRef(null);
-    function onYouTubeIframeAPIReady() {
-        currentSong.current = 0;
-        player.current = new window.YT.Player('youtube_test_player', {
-            height: '390',
-            width: '640',
-            videoId: playlist[currentSong.current],
-            useLocalHTML: true,
-            playerVars: {
-            'playsinline': 1
-            },
-            events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
+        const interval = setInterval(() => {
+            if (window.YT && window.YT.Player) {
+                clearInterval(interval);
+                onYouTubeIframeAPIReady();
             }
-        });
-    }
+        })
+    }, []);
 
     function changeSong() {
         if (currentSong.current >= 0) {
