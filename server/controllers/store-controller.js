@@ -155,7 +155,8 @@ getPlaylistPairs = async (req, res) => {
                         let pair = {
                             _id: list._id,
                             name: list.name,
-                            userName: user.userName
+                            userName: user.userName,
+                            avatar: user.avatar
                         };
                         pairs.push(pair);
                     }
@@ -282,8 +283,8 @@ queryPlaylists = async (req, res) => {
                     meetsCriteria = false;
                 }
             }
-            if (query.owner) {
-                if (!playlist.ownerEmail.trim().toLowerCase().includes(query.owner.trim().toLowerCase())) {
+            if (query.userName) {
+                if (!playlist.ownerEmail.trim().toLowerCase().includes(query.userName.trim().toLowerCase())) {
                     meetsCriteria = false;
                 }
             }
@@ -322,7 +323,8 @@ queryPlaylists = async (req, res) => {
             let pair = {
                 _id: list._id,
                 name: list.name,
-                userName: user.userName
+                userName: user.userName,
+                avatar: user.avatar
             };
             pairs.push(pair)
         }

@@ -80,7 +80,7 @@ const PlaylistsScreen = () => {
         }
         store.queryPlaylists({ 
             name : playlistName.trim().toLowerCase(),
-            owner: userName.trim().toLowerCase(),
+            userName: userName.trim().toLowerCase(),
             title: songTitle.trim().toLowerCase(),
             artist: songArtist.trim().toLowerCase(),
             year: songYear.trim().toString() 

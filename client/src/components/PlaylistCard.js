@@ -16,7 +16,7 @@ function PlaylistCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [expandCard, setExpandCard] = useState(false);
     const { idNamePair } = props;
-    
+
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
@@ -47,6 +47,12 @@ function PlaylistCard(props) {
     async function handlePlayList(event, id) {
         store.showPlayListModal(id);
     }
+    
+    async function handleCopyList(event, id) {
+        event.stopPropagation();
+        await store.copyList(id);
+        store.loadIdNamePairs();
+    }
 
     let cardElement =
         <ListItem
@@ -54,7 +60,7 @@ function PlaylistCard(props) {
             key={idNamePair._id}
             sx={{ border: "1px solid lightgray", borderRadius:"15px", p: "10px", bgcolor: '#F8E8FF', marginTop: '15px', display: 'flex', height: 60, width: 550 }}
         >
-            <Avatar alt={auth.user.userName} src={auth.user.avatar} 
+            <Avatar alt={idNamePair.userName} src={idNamePair.avatar} 
                     sx={{ width: 40, height: 40 }}
                 />
                 <Box sx={{ p: 1, flexDirection: 'column', width: 200 }} >
@@ -114,7 +120,7 @@ function PlaylistCard(props) {
                             '&:hover': { cursor: 'pointer', backgroundColor: '#255941', border: '1px solid black' }
                         }}
                         onClick={(event) => {
-                            handleEditList(event, idNamePair._id)
+                            handleCopyList(event, idNamePair._id)
                         }} aria-label='copy'
                     >
                         Copy

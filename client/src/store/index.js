@@ -24,6 +24,7 @@ console.log("create GlobalStoreContext");
 export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
+    COPY_LIST: "COPY_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
@@ -98,6 +99,20 @@ function GlobalStoreContextProvider(props) {
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                })
+            }
+            // COPY A LIST
+            case GlobalStoreActionType.COPY_LIST: {                
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter + 1,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null
@@ -300,6 +315,33 @@ function GlobalStoreContextProvider(props) {
         history.push("/playlist/");
     }
 
+    // THIS FUNCTION COPIES A LIST
+    store.copyList = async function(id) {
+        let response = await storeRequestSender.getPlaylistById(id);
+        let data = await response.json();
+        if (data.success) {
+            let copiedListName = data.playlist.name + " (Copy)";
+            let copiedListSongs = data.playlist.songs.map(song => ({
+                title: song.title, 
+                artist: song.artist, 
+                year: song.year, 
+                youTubeId: song.youTubeId
+            }));
+            const copyResponse = await storeRequestSender.createPlaylist(copiedListName, copiedListSongs, auth.user.email);
+            console.log("copied list response: " + response);
+            if (copyResponse.ok) {
+                const data = await copyResponse.json();
+                let copiedList = data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.COPY_LIST,
+                    payload: copiedList
+                });
+            }
+            else {
+                console.log("FAILED TO COPY PLAYLIST");
+            }
+        }
+    }
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
