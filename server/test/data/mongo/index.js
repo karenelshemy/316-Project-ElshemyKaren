@@ -2,6 +2,7 @@ const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
 const testData = require("../db-data.json")
 const Playlist = require('../../../models/playlist-model')
 const User = require("../../../models/user-model")
+const Song = require("../../../models/song-model")
 
 async function clearCollection(collection, collectionName) {
     try {
@@ -57,6 +58,37 @@ async function fillCollection(collection, collectionName, data) {
             }
             await user.save();
         }
+    } else if (collectionName == "Song") {
+        for (const list of data.playlists) {
+            const ownerEmail = list.ownerEmail;
+            for (const song of list.songs) {
+                let songInDB = await Song.findOne({ title: song.title, artist: song.artist, year: song.year });
+                if (songInDB) {
+                    songInDB.playlists += 1;
+                    let hasUser = false;
+                    for (const user of songInDB.users) {
+                        if (ownerEmail === user) {
+                            hasUser = true;
+                            break;
+                        }
+                    }
+                    if (hasUser === false) {
+                        songInDB.users.push(ownerEmail);
+                    }
+                    await songInDB.save();
+                } else {
+                    const addSong = new collection({
+                        title: song.title,
+                        artist: song.artist,
+                        year: song.year,
+                        youTubeId: song.youTubeId,
+                        users: [ownerEmail],
+                        playlists: 1 
+                    });
+                    await addSong.save();
+                }
+            }
+        }
     }
     console.log(collectionName + " filled");
 }
@@ -65,11 +97,13 @@ async function resetMongo() {
     console.log("Resetting the Mongo DB")
     await clearCollection(Playlist, "Playlist");
     await clearCollection(User, "User");
+    await clearCollection(Song, "Song");
     await fillCollection(Playlist, "Playlist", testData);
     await fillCollection(User, "User", testData);
+    await fillCollection(Song, "Song", testData);
 }
 
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 mongoose
     .connect(process.env.DB_CONNECT, { useNewUrlParser: true })
     .then(() => { resetMongo() })

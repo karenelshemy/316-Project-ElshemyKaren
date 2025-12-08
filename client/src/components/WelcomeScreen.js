@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -8,6 +8,11 @@ import MusicNote from '@mui/icons-material/MusicNote';
 import Typography from '@mui/material/Typography';
 
 export default function WelcomeScreen() {
+    const history = useHistory();
+
+    function handleContinueAsGuest(event) {
+        history.push('/playlist');
+    }
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -27,9 +32,8 @@ export default function WelcomeScreen() {
                 </Box>
                 <Box sx={{ display: 'flex', marginTop: 10, gap: 5 }} >
                     <Button 
-                        component={Link} 
-                        to="/playlist/" 
                         variant="contained" 
+                        onClick={handleContinueAsGuest}
                         sx={{
                             backgroundColor: 'black',
                             textTransform: 'none',
