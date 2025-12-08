@@ -69,13 +69,22 @@ export const queryPlaylists = async (query) => {
     return response;
 }
 
+export const querySongs = async (query) => {
+    const response = await fetch(`${baseURL}/songs/query?${query}`, {
+        method: "GET",
+        credentials: "include",
+    });
+    return response
+}
+
 const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
     getPlaylistPairs,
     updatePlaylistById,
-    queryPlaylists
+    queryPlaylists, 
+    querySongs
 }
 
 export default apis

@@ -74,7 +74,7 @@ const PlaylistsScreen = () => {
     }
 
     const handleSearchPlaylists = () => {
-        if (!playlistName.trim() && !userName.trim() && !songTitle.trim() && !songArtist.trim() && !songYear.trim()) {
+        if (!playlistName.trim() && !userName.trim() && !songTitle.trim() && !songArtist.trim() && !songYear) {
             store.loadIdNamePairs();
             return;
         }
@@ -83,7 +83,7 @@ const PlaylistsScreen = () => {
             userName: userName.trim().toLowerCase(),
             title: songTitle.trim().toLowerCase(),
             artist: songArtist.trim().toLowerCase(),
-            year: songYear.trim().toString() 
+            year: songYear.toString()
         })
     }
 

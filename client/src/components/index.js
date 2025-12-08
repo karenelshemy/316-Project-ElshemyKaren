@@ -11,6 +11,8 @@ import PlaylistsScreen from './PlaylistsScreen'
 import RegisterScreen from './RegisterScreen'
 import SongCatalogScreen from './SongCatalogScreen'
 import WelcomeScreen from './WelcomeScreen'
+import PlaylistCard from './PlaylistCard'
+import SongCard from './SongCard'
 
 /*
     This serves as a module so that we can import
@@ -31,5 +33,7 @@ export {
     PlaylistsScreen,
     RegisterScreen,
     SongCatalogScreen,
-    WelcomeScreen
+    WelcomeScreen,
+    PlaylistCard, 
+    SongCard
 }

@@ -1,5 +1,6 @@
 const Playlist = require('../models/playlist-model')
 const User = require('../models/user-model');
+const Song = require('../models/song-model');
 const auth = require('../auth')
 /*
     This is our back-end API. It provides all the data services
@@ -341,6 +342,71 @@ queryPlaylists = async (req, res) => {
         console.log(err);
     }
 }
+
+querySongs = async (req, res) => {
+    const query = req.query;
+
+    if (!query) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide something to search.'
+        })
+    }
+    try {
+        let songs = await Song.find({});
+        let filteredSongs = [];
+
+        for (let song of songs) {
+            let meetsCriteria = true;
+            
+            if (query.title) {
+                if (song.title.trim().toLowerCase() !== query.title.trim().toLowerCase()) {
+                    meetsCriteria = false;
+                }
+            }
+            if (query.artist) {
+                if (song.artist.trim().toLowerCase() !== query.artist.trim().toLowerCase()) {
+                    meetsCriteria = false;
+                }
+            }
+            if (query.year) {
+                if (song.year.toString() !== query.year.toString()) {
+                    meetsCriteria = false;
+                }
+            }
+            if (meetsCriteria === true) {
+                filteredSongs.push(song);
+            }
+        }
+
+        let pairs = [];
+        for (let key in filteredSongs) {
+            let song = filteredSongs[key];
+            let pair = {
+                _id: song._id,
+                title: song.title,
+                artist: song.artist,
+                year: song.year,
+                youTubeId: song.youTubeId,
+                users: song.users, 
+                playlists: song.playlists
+            };
+            pairs.push(pair)
+        }
+
+        if (filteredSongs.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No songs meet the given criteria!"
+            })
+        } else {
+            return res.status(200).json({ success: true, songPairs: pairs })
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
@@ -348,5 +414,6 @@ module.exports = {
     getPlaylistPairs,
     getPlaylists,
     updatePlaylist,
-    queryPlaylists
+    queryPlaylists,
+    querySongs
 }

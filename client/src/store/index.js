@@ -27,6 +27,7 @@ export const GlobalStoreActionType = {
     COPY_LIST: "COPY_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
+    LOAD_SONGS: "LOAD_SONGS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     PLAY_CURRENT_LIST: "PLAY_CURRENT_LIST",
@@ -55,6 +56,7 @@ function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         currentModal : CurrentModal.NONE,
         idNamePairs: [],
+        songPairs: [],
         currentList: null,
         currentSongIndex : -1,
         currentSong : null,
@@ -137,6 +139,21 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: payload,
+                    currentList: null,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            // GET ALL THE SONGS SO WE CAN PRESENT THEM
+            case GlobalStoreActionType.LOAD_SONGS: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    songPairs: payload,
                     currentList: null,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -377,6 +394,26 @@ function GlobalStoreContextProvider(props) {
             console.log("FAILED TO FIND PLAYLISTS THAT MATCH CRITERIA");
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: []
+            });
+        }
+    }
+
+    store.querySongs = async function (query) {
+        let queryCriteria = new URLSearchParams(query).toString();
+        const response = await storeRequestSender.querySongs(queryCriteria);
+        const data = await response.json();
+        if (data.success) {
+            let songPairs = data.songPairs;
+            console.log(songPairs);
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_SONGS,
+                payload: songPairs
+            });
+        } else {
+            console.log("FAILED TO FIND SONGS THAT MATCH CRITERIA");
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_SONGS,
                 payload: []
             });
         }
