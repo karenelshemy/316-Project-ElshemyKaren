@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth';
 
+import MUIRemoveSongModal from './MUIRemoveSongModal';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -51,6 +52,16 @@ function SongCard(props) {
         handleMenuClose();
     } 
 
+    async function handleRemoveSong(event, id) {
+        event.stopPropagation();
+        store.showRemoveSongModal(id);
+    }
+
+    let modalJSX = "";
+    if (store.isRemoveSongModalOpen()) {
+        modalJSX = <MUIRemoveSongModal />
+    }
+
     let cardElement =
         <ListItem
             id={song._id}
@@ -97,7 +108,7 @@ function SongCard(props) {
             >
                 <MenuItem onClick={handleMenu2Open} sx={{ py: 2, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Add to Playlist</MenuItem>
                 <MenuItem onClick={handleMenuClose} sx={{ py: 2, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Edit Song</MenuItem>
-                <MenuItem onClick={handleMenuClose} sx={{ py: 2, height: 60, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Remove from Catalog</MenuItem>
+                <MenuItem onClick={(event) => handleRemoveSong(event, song._id)} sx={{ py: 2, height: 60, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Remove from Catalog</MenuItem>
             </Menu>
             <Menu
                 id='playlist-menu'
@@ -117,7 +128,10 @@ function SongCard(props) {
             </Menu>
         </ListItem>
     return (
-        cardElement
+        <>
+        {cardElement}
+        {modalJSX}
+    </>
     );
 }
 

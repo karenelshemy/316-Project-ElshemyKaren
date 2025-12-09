@@ -48,6 +48,14 @@ export const deletePlaylistById = async (id) => {
     });
     return response;
 }
+
+export const deleteSongById = async (id) => {
+    const response = await fetch(`${baseURL}/song/${id}`, {
+        method: "DELETE",
+        credentials: "include"
+    });
+    return response;
+}
 export const getPlaylistById = async (id) => {
     const response = await fetch(`${baseURL}/playlist/${id}`, {
         method: "GET",
@@ -102,6 +110,7 @@ const apis = {
     createPlaylist,
     createSong,
     deletePlaylistById,
+    deleteSongById,
     getPlaylistById,
     getSongById,
     getPlaylistPairs,

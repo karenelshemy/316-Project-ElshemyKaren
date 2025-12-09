@@ -29,7 +29,7 @@ createPlaylist = (req, res) => {
     if (!playlist) {
         return res.status(400).json({ success: false, error: err })
     }
-    
+
     User.findOne({ _id: req.userId }, (err, user) => {
         console.log("user found: " + JSON.stringify(user));
         user.playlists.push(playlist._id);
@@ -139,6 +139,43 @@ deletePlaylist = async (req, res) => {
         asyncFindUser(playlist);
     })
 }
+
+deleteSong = async (req, res) => {
+    if(auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        })
+    }
+    console.log("delete Song with id: " + JSON.stringify(req.params.id));
+    console.log("delete " + req.params.id);
+    Song.findById({ _id: req.params.id }, (err, song) => {
+        console.log("song found: " + JSON.stringify(song));
+        if (err) {
+            return res.status(404).json({
+                errorMessage: 'Song not found!',
+            })
+        }
+
+        // DOES THIS SONG BELONG TO THIS USER?
+        async function asyncFindUser(list) {
+            const user = await User.findById(req.userId);
+            console.log("user._id: " + user._id);
+            console.log("req.userId: " + req.userId);
+            if (user._id == req.userId) {
+                console.log("correct user!");
+                await Song.findOneAndDelete({ _id: req.params.id });
+                return res.status(200).json({ success: true, id: req.params.id });
+            } else {
+                console.log("incorrect user!");
+                return res.status(400).json({ 
+                    errorMessage: "authentication error" 
+                });
+            }
+        }
+        asyncFindUser(song);
+    })
+}
+
 getPlaylistById = async (req, res) => {
     if(auth.verifyUser(req) === null){
         return res.status(400).json({
@@ -476,6 +513,7 @@ module.exports = {
     createPlaylist,
     createSong,
     deletePlaylist,
+    deleteSong,
     getPlaylistById,
     getSongById,
     getPlaylistPairs,

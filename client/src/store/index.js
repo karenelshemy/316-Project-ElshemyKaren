@@ -49,6 +49,7 @@ const CurrentModal = {
     EDIT_PLAYLIST : "EDIT_PLAYLIST",
     EDIT_SONG : "EDIT_SONG",
     ADD_SONG_CATALOG : "ADD_SONG_CATALOG",
+    REMOVE_SONG : "REMOVE_SONG",
     ERROR : "ERROR"
 }
 
@@ -66,7 +67,9 @@ function GlobalStoreContextProvider(props) {
         newListCounter: 0,
         listNameActive: false,
         listIdMarkedForDeletion: null,
-        listMarkedForDeletion: null
+        listMarkedForDeletion: null,
+        songIdMarkedForRemoval: null,
+        songMarkedForRemoval: null,
     });
     const history = useHistory();
 
@@ -276,7 +279,7 @@ function GlobalStoreContextProvider(props) {
             }
             case GlobalStoreActionType.REMOVE_SONG: {
                 return setStore({
-                    currentModal : CurrentModal.NONE,
+                    currentModal : CurrentModal.REMOVE_SONG,
                     idNamePairs: store.idNamePairs,
                     songPairs: store.songPairs,
                     currentList: store.currentList,
@@ -285,7 +288,9 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    songIdMarkedForRemoval: payload.id,
+                    songMarkedForRemoval: payload.song
                 });
             }
             case GlobalStoreActionType.HIDE_MODALS: {
@@ -299,7 +304,9 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    songIdMarkedForRemoval: null,
+                    songMarkedForRemoval: null
                 });
             }
             default:
@@ -539,6 +546,21 @@ function GlobalStoreContextProvider(props) {
         getListToDelete(id);
     }
 
+    store.showRemoveSongModal = (id) => {
+        async function getSongToRemove(id) {
+            let response = await storeRequestSender.getSongById(id);
+            let data = await response.json();
+            if (data.success) {
+                let song = data.song;
+                storeReducer({
+                    type: GlobalStoreActionType.REMOVE_SONG,
+                    payload: { id: id, song: song}
+                });
+            }
+        }
+        getSongToRemove(id); 
+    }
+
     store.showEditSongModal = (songIndex, songToEdit) => {
         storeReducer({
             type: GlobalStoreActionType.EDIT_SONG,
@@ -602,6 +624,9 @@ function GlobalStoreContextProvider(props) {
     }
     store.isEditPlaylistModalOpen = () => {
         return store.currentModal === CurrentModal.EDIT_PLAYLIST;
+    }
+    store.isRemoveSongModalOpen = () => {
+        return store.currentModal === CurrentModal.REMOVE_SONG;
     }
     store.isAddSongCatalogModalOpen = () => {
         return store.currentModal === CurrentModal.ADD_SONG_CATALOG;
@@ -695,6 +720,23 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncAddSongToCatalog(song);
+    }
+
+    // THIS FUNCTION REMOVES A SONG FROM THE CATALOG
+    store.removeSongFromCatalog = async function (song) {
+        async function asyncRemoveSongFromCatalog(song) {
+            let response = await storeRequestSender.deleteSongById(song._id);
+            let data = await response.json();
+            if (data.success) {
+                const songPairs = store.songPairs.filter((pair) => pair._id !== song._id);
+                store.hideModals();
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_SONGS,
+                    payload: songPairs
+                });
+            }
+        }
+        asyncRemoveSongFromCatalog(song);
     }
     // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
     // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX
