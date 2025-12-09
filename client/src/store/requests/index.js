@@ -90,6 +90,19 @@ export const updatePlaylistById = async (id, playlist) => {
     return response;
 }
 
+export const updateSongById = async (id, song) => {
+    const response = await fetch(`${baseURL}/song/${id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        // SPECIFY THE PAYLOAD
+        body: JSON.stringify({ song: song })
+    });
+    return response;
+}
+
 export const queryPlaylists = async (query) => {
     const response = await fetch(`${baseURL}/playlists/query?${query}`, {
         method: "GET",
@@ -115,6 +128,7 @@ const apis = {
     getSongById,
     getPlaylistPairs,
     updatePlaylistById,
+    updateSongById,
     queryPlaylists, 
     querySongs
 }

@@ -18,6 +18,7 @@ router.get('/song/:id', auth.verify, StoreController.getSongById)
 router.get('/playlistpairs', auth.verify, StoreController.getPlaylistPairs)
 router.get('/playlists', auth.verify, StoreController.getPlaylists)
 router.put('/playlist/:id', auth.verify, StoreController.updatePlaylist)
+router.put('/song/:id', auth.verify, StoreController.updateSong)
 router.get('/playlists/query', StoreController.queryPlaylists)
 router.get('/songs/query', StoreController.querySongs)
 

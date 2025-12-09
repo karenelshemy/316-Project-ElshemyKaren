@@ -1,7 +1,8 @@
 const Playlist = require('../models/playlist-model')
 const User = require('../models/user-model');
 const Song = require('../models/song-model');
-const auth = require('../auth')
+const auth = require('../auth');
+const songModel = require('../models/song-model');
 /*
     This is our back-end API. It provides all the data services
     our database needs. Note that this file contains the controller
@@ -365,6 +366,86 @@ updatePlaylist = async (req, res) => {
     }
 }
 
+updateSong = async (req, res) => {
+    if(auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        })
+    }
+    const body = req.body
+    console.log("updateSong: " + JSON.stringify(body));
+    console.log("req.body.name: " + req.body.name);
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    // DOES THIS SONG BELONG TO THIS USER?
+    try { 
+        const song = await Song.findOne({ _id: req.params.id });
+        if (!song) {
+            return res.status(404).json({
+                success: false,
+                message: 'Song not found!',
+            })
+        }
+        console.log("song found: " + JSON.stringify(song));
+
+        const user = await User.findById(req.userId);
+        console.log("user._id: " + user._id);
+        console.log("req.userId: " + req.userId);
+        if (user._id.toString() !== req.userId.toString()) {
+            console.log("incorrect user!");
+            return res.status(400).json({ success: false, description: "authentication error" });
+        }
+        if (user._id.toString() === req.userId.toString()) {
+            console.log("correct user!");
+        }
+        
+        let prevTitle = song.title;
+        let prevArtist = song.artist;
+        let prevYear = song.year;
+        let prevYouTubeId = song.youTubeId;
+
+        song.title = body.song.title;
+        song.artist = body.song.artist;
+        song.year = body.song.year;
+        song.youTubeId = body.song.youTubeId;
+        song
+            .save()
+            .then(() => {
+                console.log("SUCCESS!!!");
+                return res.status(200).json({
+                    success: true,
+                    song: song,
+                    message: 'Song updated!',
+                })
+            })
+        
+        const playlists = await Playlist.find({});
+        for (const playlist of playlists) {
+            for (const currentSong of playlist.songs) {
+                if (currentSong.title === prevTitle && currentSong.artist === prevArtist && currentSong.year === prevYear && currentSong.youTubeId === prevYouTubeId) {
+                    currentSong.title = song.title;
+                    currentSong.artist = song.artist;
+                    currentSong.year = song.year;
+                    currentSong.youTubeId = song.youTubeId;
+                    await playlist.save();
+                }
+            }
+        }
+        } catch (error) {
+            console.log("FAILURE: " + JSON.stringify(error));
+            return res.status(404).json({
+                error,
+                message: 'Song not updated!'
+        });
+    }
+}
+
 queryPlaylists = async (req, res) => {
     const query = req.query;
 
@@ -519,6 +600,7 @@ module.exports = {
     getPlaylistPairs,
     getPlaylists,
     updatePlaylist,
+    updateSong,
     queryPlaylists,
     querySongs
 }

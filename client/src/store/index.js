@@ -63,6 +63,7 @@ function GlobalStoreContextProvider(props) {
         songPairs: [],
         currentList: null,
         currentSongIndex : -1,
+        currentSongId: null,
         currentSong : null,
         newListCounter: 0,
         listNameActive: false,
@@ -255,7 +256,7 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     songPairs: store.songPairs,
                     currentList: store.currentList,
-                    currentSongIndex: payload.currentSongIndex,
+                    currentSongId: payload.currentSongId,
                     currentSong: payload.currentSong,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -561,10 +562,10 @@ function GlobalStoreContextProvider(props) {
         getSongToRemove(id); 
     }
 
-    store.showEditSongModal = (songIndex, songToEdit) => {
+    store.showEditSongModal = (id, songToEdit) => {
         storeReducer({
             type: GlobalStoreActionType.EDIT_SONG,
-            payload: {currentSongIndex: songIndex, currentSong: songToEdit}
+            payload: {currentSongId: id, currentSong: songToEdit}
         });        
     }
 
@@ -737,6 +738,30 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncRemoveSongFromCatalog(song);
+    }
+
+    store.editSongFromCatalog = async function (id, newSongData) {
+        async function asyncEditSongFromCatalog(id, newSongData) {
+            let response = await storeRequestSender.updateSongById(id, newSongData);
+            let data = await response.json();
+            if (data.success) {
+                const song = data.song;
+                let songPairs = [];
+                for (let pair of store.songPairs) {
+                    if (pair._id === song._id) {
+                        songPairs.push({ ...pair, title : song.title, year : song.year, artist : song.artist, youTubeId : song.youTubeId});
+                    } else {
+                        songPairs.push(pair);
+                    }
+                }
+                store.hideModals();
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_SONGS,
+                    payload: songPairs
+                });
+            }
+        }
+        asyncEditSongFromCatalog(id, newSongData);
     }
     // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
     // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX

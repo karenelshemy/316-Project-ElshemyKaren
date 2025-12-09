@@ -7,6 +7,7 @@ import MUIDeleteModal from './MUIDeleteModal'
 import MUIEditPlaylistModal from './MUIEditPlaylistModal'
 import MUIPlayPlaylistModal from './MUIPlayPlaylistModal'
 import MUIAddSongModal from './MUIAddSongModal'
+import MUIEditSongModal from './MUIEditSongModal'
 import MUIRemoveSongModal from './MUIRemoveSongModal'
 import NavigationBar from './NavigationBar'
 import PlaylistsScreen from './PlaylistsScreen'
@@ -32,6 +33,7 @@ export {
     MUIEditPlaylistModal, 
     MUIPlayPlaylistModal,
     MUIRemoveSongModal,
+    MUIEditSongModal,
     MUIAddSongModal,
     NavigationBar,
     PlaylistsScreen,
