@@ -683,7 +683,7 @@ function GlobalStoreContextProvider(props) {
                         year : song.year, 
                         youTubeId : song.youTubeId
                     });
-                    response = await storeRequestSender.updatePlaylistById(playlistid);
+                    response = await storeRequestSender.updatePlaylistById(playlistid, playlist);
                     data = await response.json();
                     if (data.success) {
                         storeReducer({

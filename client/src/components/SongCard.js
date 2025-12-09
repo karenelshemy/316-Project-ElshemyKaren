@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth';
 
@@ -21,6 +21,10 @@ function SongCard(props) {
     const [anchEl, setAnchEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const isMenu2Open = Boolean(anchEl);
+
+    useEffect(() => {
+        store.loadIdNamePairs();
+    }, []);
 
     let ownedByUser = false;
     for (const user of song.users) {
@@ -114,7 +118,7 @@ function SongCard(props) {
                 open={isMenuOpen}
                 onClose={handleMenuClose}
             >
-                <MenuItem onClick={handleMenu2Open} sx={{ py: 2, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Add to Playlist</MenuItem>
+                <MenuItem onMouseEnter={handleMenu2Open} sx={{ py: 2, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Add to Playlist</MenuItem>
                 <MenuItem onClick={(event) => handleEditSong(event, song._id, song)} sx={{ py: 2, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Edit Song</MenuItem>
                 <MenuItem onClick={(event) => handleRemoveSong(event, song._id)} sx={{ py: 2, height: 60, '&:hover': { cursor: 'pointer', bgcolor: '#DE9CFF'} }}>Remove from Catalog</MenuItem>
             </Menu>
@@ -122,7 +126,7 @@ function SongCard(props) {
                 id='playlist-menu'
                 anchorEl={anchEl}
                 anchorOrigin={{
-                    vertical: 'bottom',
+                    vertical: 'top',
                     horizontal: 'right',
                 }}
                 keepMounted
@@ -132,7 +136,19 @@ function SongCard(props) {
                 }}
                 open={isMenu2Open}
                 onClose={handleMenu2Close}
+                PaperProps={{ sx: { backgroundColor: '#F7A18F' }}}
             >
+                {store.idNamePairs.map((pair) => (
+                    <MenuItem
+                        key={pair._id}
+                        onClick={(event) => handleAddToPlaylist(event, pair._id)}
+                        sx={{
+                            '&:hover': { cursor: 'pointer', bgcolor: '#ED765F'}
+                        }}
+                    >
+                        {pair.name}
+                    </MenuItem>
+                ))}
             </Menu>
         </ListItem>
     return (
