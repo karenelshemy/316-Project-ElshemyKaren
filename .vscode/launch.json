@@ -4,6 +4,18 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Debug Vitest",
+            "program": "${workspaceFolder}/server/node_modules/vitest/vitest.mjs",
+            "args": ["run"],
+            "autoAttachChildProcesses": true,
+            "smartStep": true,
+            "skipFiles": ["<node_internals>/**"],
+            "cwd": "${workspaceFolder}/server/",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Reset Mongo Data",
             "program": "${workspaceFolder}/server/test/data/mongo/index.js",
             "args": [
