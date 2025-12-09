@@ -2,7 +2,7 @@ const Playlist = require('../models/playlist-model')
 const User = require('../models/user-model');
 const Song = require('../models/song-model');
 const auth = require('../auth');
-const songModel = require('../models/song-model');
+
 /*
     This is our back-end API. It provides all the data services
     our database needs. Note that this file contains the controller
@@ -164,7 +164,20 @@ deleteSong = async (req, res) => {
             console.log("req.userId: " + req.userId);
             if (user._id == req.userId) {
                 console.log("correct user!");
+
+                const title = song.title;
+                const artist = song.artist;
+                const year = song.year;
+                const youTubeId = song.youTubeId;
+
                 await Song.findOneAndDelete({ _id: req.params.id });
+
+                const playlists = await Playlist.find({});
+                for (const playlist of playlists) {
+                    playlist.songs = playlist.songs.filter((song) => !(song.title === title && song.artist === artist && song.year === year && song.youTubeId === youTubeId));
+                    await playlist.save();
+                }
+
                 return res.status(200).json({ success: true, id: req.params.id });
             } else {
                 console.log("incorrect user!");
